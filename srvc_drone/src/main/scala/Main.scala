@@ -1,7 +1,7 @@
-object Main extends App {
-    import java.util.Properties
+import java.util.Properties
+import org.apache.kafka.clients.producer._
 
-    import org.apache.kafka.clients.producer._
+object Main extends App {
 
     val props = new Properties()
     props.put("bootstrap.servers", "localhost:9092")
