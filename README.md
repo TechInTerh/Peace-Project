@@ -27,15 +27,36 @@ docker-compose down
 
 ## Running apps
 
-Directory contains 4 sbt projects each being independent app:
+Our apps reach kafka using docker hostnames, so you need to add those two entry in `/etc/hosts`.
 
-- `domain`: define the domain model representing our drones.
-- `avro`: generates and registers _Avro_ schemas for data used as keys/values in created topics.
+```txt
+127.0.0.1 kafka
+127.0.0.1 schema-registry
+```
+
+This directory contains 4 sbt projects each being independent app:
+
+- `avro`: generates and registers _Avro_ schemas for our report datas
 - `srvc_drone`: produces drone random data to the specified kafka topic.
 - `srvc_analysis`: Consume data from kafka topics to analyze them with Spark.
 - `srvc_alert`: Consume data from kafka topics to send alerts to peacewatchers.
 
-With `sbt` each app can be started in separate shell instance with the following command:
-`sbt "project <name>" "run"`, for an ex. `sbt "project srvc_drone" "run"`.
+With `sbt` each app can be started in separate shell instance.
+To do that, use the following command:
+
+```sh
+sbt "project <name>" "run"
+```
+
+Example:
+
+```sh
+sbt "project srvc_drone" "run"
+```
 
 Please run `avro` and `srvc_drone` first.
+To remove all generated files, use the following command:
+
+```sh
+find . -name target -type d -exec rm -rf {} \;
+```
