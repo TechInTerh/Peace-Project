@@ -1,7 +1,7 @@
 
 // The simplest possible sbt build file is just one line:
 
-scalaVersion := "2.13.8"
+scalaVersion := "2.12.10"
 // That is, to create a valid sbt build, all you've got to do is define the
 // version of Scala you'd like your project to use.
 
@@ -13,7 +13,7 @@ scalaVersion := "2.13.8"
 
 // It's possible to define many kinds of settings, such as:
 
-name := "hello-world"
+name := "Peace-project-analysis"
 organization := "ch.epfl.scala"
 version := "1.0"
 
@@ -25,7 +25,31 @@ version := "1.0"
 // Want to use a published library in your project?
 // You can define other libraries as dependencies in your build like this:
 
-libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
+libraryDependencies += "org.apache.spark" %% "spark-core" % "3.1.2"
+libraryDependencies += "org.apache.spark" %% "spark-sql" % "3.1.2"
+libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5"
+libraryDependencies += "org.twitter4j" % "twitter4j-core" % "4.0.5"
+libraryDependencies += "com.google.code.gson" % "gson" % "2.7"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8"
+
+libraryDependencies += "org.apache.hadoop" % "hadoop-aws" % "2.7.3"
+libraryDependencies ++= {
+
+	lazy val minioVersion = "6.0.13"
+	lazy val commonsioVersion = "2.5"
+	lazy val jossVersion = "0.10.2"
+
+	Seq(
+		"io.minio"              % "minio"                   % minioVersion,
+		"commons-io"            % "commons-io"              % commonsioVersion,
+		"org.javaswift"         % "joss"                    % jossVersion,
+		"com.amazonaws"         % "aws-java-sdk"            % "1.11.750",
+		"org.slf4j"             % "slf4j-api"               % "1.7.5",
+		"ch.qos.logback"        % "logback-classic"         % "1.0.9"
+	)
+
+}
+
 
 // Here, `libraryDependencies` is a set of dependencies, and by using `+=`,
 // we're adding the scala-parser-combinators dependency to the set of dependencies
