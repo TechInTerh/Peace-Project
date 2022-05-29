@@ -19,6 +19,7 @@ object RegisterSchema extends App {
         longitude: Double,
         citizens: Vector[Citizen],
         words: Vector[String],
+        // Avro cringe with Date type, so we'll just use String and set a format
         timestamp: String
     )
 

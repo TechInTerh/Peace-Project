@@ -36,7 +36,7 @@ Our apps reach kafka using docker hostnames, so you need to add those two entry 
 
 This directory contains 4 sbt projects each being independent app:
 
-- `avro`: generates and registers _Avro_ schemas for data used as keys/values in created topics.
+- `avro`: generates and registers _Avro_ schemas for our report datas
 - `srvc_drone`: produces drone random data to the specified kafka topic.
 - `srvc_analysis`: Consume data from kafka topics to analyze them with Spark.
 - `srvc_alert`: Consume data from kafka topics to send alerts to peacewatchers.
