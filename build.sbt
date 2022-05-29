@@ -1,6 +1,6 @@
 import Dependencies._
 
-name := "poc-peaceland"
+name := "peace-project"
 version := "0.1"
 
 lazy val commonSettings = Seq(
