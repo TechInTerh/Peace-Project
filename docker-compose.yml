@@ -80,3 +80,31 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
 
       CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
+
+  avro:
+    image: avro
+    build: .
+    depends_on:
+      - schema-registry
+    command: /ops/sbt/bin/sbt "project avro" run
+
+  srvc_drone:
+    image: srvc_drone
+    build: .
+    depends_on:
+      - avro
+    command: /ops/sbt/bin/sbt "project srvc_drone" run
+
+  srvc_analysis:
+    image: srvc_analysis
+    build: .
+    depends_on:
+      - kafka-connect
+    command: /ops/sbt/bin/sbt "project srvc_analysis" run
+
+  srvc_alert:
+    image: srvc_alert
+    build: .
+    depends_on:
+      - avro
+    command: /ops/sbt/bin/sbt "project srvc_alert" run

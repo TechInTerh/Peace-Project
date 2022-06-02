@@ -41,6 +41,8 @@ docker-compose down
 
 ## Running apps
 
+TODO: UPDATE THIS PART
+
 This directory contains 4 sbt projects each being independent app:
 
 - `avro`: generates and registers _Avro_ schemas for our report datas
@@ -52,13 +54,13 @@ With `sbt` each app can be started in separate shell instance.
 To do that, use the following command:
 
 ```sh
-sbt "project <name>" "run"
+sbt "project <name>" run
 ```
 
 Example:
 
 ```sh
-sbt "project srvc_drone" "run"
+sbt "project srvc_drone" run
 ```
 
 Please run `avro` and `srvc_drone` first.
