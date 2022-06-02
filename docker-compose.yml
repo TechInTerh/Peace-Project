@@ -3,9 +3,6 @@ version: '3.5'
 services:
   zookeeper:
     image: "confluentinc/cp-zookeeper:latest"
-    networks:
-      - streams-network
-    hostname: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
 
@@ -15,9 +12,6 @@ services:
       - zookeeper
     ports:
       - 9092:9092
-    networks:
-      - streams-network
-    hostname: kafka
     environment:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -31,9 +25,6 @@ services:
       - kafka
     ports:
       - 8081:8081
-    networks:
-      - streams-network
-    hostname: schema-registry
     restart: on-failure
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
@@ -45,9 +36,6 @@ services:
     ports:
         - 9000:9000
         - 9001:9001
-    networks:
-        - streams-network
-    hostname: minio
     command: server /data --console-address ":9001"
     environment:
         MINIO_ROOT_USER: minioadmin
@@ -57,9 +45,6 @@ services:
       image: minio/mc
       depends_on:
           - minio
-      networks:
-        - streams-network
-      hostname: create-buckets
       entrypoint: >
           /bin/sh -c -e "
           until (/usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin) do echo '...waiting...' && sleep 1; done;
@@ -69,9 +54,6 @@ services:
 
   kafka-connect:
     image: "confluentinc/cp-kafka-connect:latest"
-    networks:
-        - streams-network
-    hostname: kafka-connect
     depends_on:
       - kafka
       - schema-registry
@@ -97,6 +79,3 @@ services:
 
       CONNECT_PLUGIN_PATH: /usr/share/java/confluentinc/cp-kafka-connect:7.1.1
       CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
-
-networks:
-  streams-network:

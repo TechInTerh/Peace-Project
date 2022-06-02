@@ -47,7 +47,7 @@ object RegisterSchema extends App {
     ).map {
         case (subject, schema) =>
             subject -> basicRequest
-                .post(uri"http://schema-registry:8081/subjects/$subject/versions")
+                .post(uri"http://localhost:8081/subjects/$subject/versions")
                 .header("Content-Type", "application/vnd.schemaregistry.v1+json")
                 .body(schema)
                 .send(backend)
