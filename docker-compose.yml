@@ -22,7 +22,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "drone-report:1:1,connect-config:1:1,connect-offset:1:1,connect-status:1:1"
+      KAFKA_CREATE_TOPICS: "drone-report:1:1"
 
   schema-registry:
     image: "confluentinc/cp-schema-registry:latest"
@@ -62,7 +62,7 @@ services:
       hostname: create-buckets
       entrypoint: >
           /bin/sh -c -e "
-          until (/usr/bin/mc alias set myminio http://minio:9000 minio minio123) do echo '...waiting...' && sleep 1; done;
+          until (/usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin) do echo '...waiting...' && sleep 1; done;
           /usr/bin/mc mb -p myminio/kafka-bucket;
           /usr/bin/mc policy set public myminio/kafka-bucket;
           "
@@ -76,16 +76,26 @@ services:
       - kafka
       - schema-registry
     environment:
-      CONNECT_BOOTSTRAP_SERVERS: kafka:9092
       CONNECT_GROUP_ID: srvc_connect
+      CONNECT_BOOTSTRAP_SERVERS: kafka:9092
+
       CONNECT_CONFIG_STORAGE_TOPIC: connect-config
       CONNECT_OFFSET_STORAGE_TOPIC: connect-offset
       CONNECT_STATUS_STORAGE_TOPIC: connect-status
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: schema-registry:8081
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: schema-registry:8081
+
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+
+      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+
       CONNECT_PLUGIN_PATH: /usr/share/java/confluentinc/cp-kafka-connect:7.1.1
-      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.avro.AvroConverter
-      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.avro.AvroConverter
-      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.avro.AvroConverter
-      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.avro.AvroConverter
       CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
 
 networks:
