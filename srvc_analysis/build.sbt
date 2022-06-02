@@ -1,7 +1,7 @@
 
 // The simplest possible sbt build file is just one line:
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.12"
 // That is, to create a valid sbt build, all you've got to do is define the
 // version of Scala you'd like your project to use.
 
@@ -15,7 +15,7 @@ scalaVersion := "2.11.8"
 
 name := "Peace-project-analysis"
 organization := "ch.epfl.scala"
-version := "1.0"
+version := "1.01"
 
 // Note, it's not required for you to define these three settings. These are
 // mostly only necessary if you intend to publish your library's binaries on a
@@ -28,7 +28,6 @@ version := "1.0"
 // Add spark dependenceies
 libraryDependencies += "org.apache.spark" %% "spark-core" % "2.3.0"
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.3.0"
-//libraryDependencies += "io.minio" % "spark-select_2.11" % "2.1"
 libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "2.8.2"
 //Add Hadoop 2.8.2
 libraryDependencies += "org.apache.hadoop" % "hadoop-aws" % "2.8.3"
@@ -46,16 +45,6 @@ libraryDependencies += "com.amazonaws" % "aws-java-sdk-core" % "1.11.234"
 libraryDependencies += "com.amazonaws" % "aws-java-sdk-kms" % "1.11.234"
 // Add Aws Java SDK for Amazon S3 1.11.234
 libraryDependencies += "com.amazonaws" % "aws-java-sdk-s3" % "1.11.234"
-/*
-libraryDependencies += "org.apache.spark" %% "spark-core" % "2.4.0"
-libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.0"
-
-libraryDependencies += "com.amazonaws" % "aws-java-sdk" % "1.11.712"
-libraryDependencies += "org.apache.hadoop" % "hadoop-aws" % "2.7.3"
-*/
-//resolvers += "bintray-spark-packages" at "https://dl.bintray.com/spark-packages/maven/"
-//addSbtPlugin("org.spark-packages" % "sbt-spark-package" % "0.2.6")
-//spDependencies += "minio/spark-select:2.1"
 
 
 
