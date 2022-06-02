@@ -53,13 +53,15 @@ services:
           "
 
   kafka-connect:
-    image: "confluentinc/cp-kafka-connect:latest"
-    depends_on:
-      - kafka
-      - schema-registry
+    image: srvc_connect
+    build: srvc_connect
+    ports:
+      - 8083:8083
     environment:
+      CONNECT_REST_PORT: 8083
       CONNECT_GROUP_ID: srvc_connect
       CONNECT_BOOTSTRAP_SERVERS: kafka:9092
+      CONNECT_REST_ADVERTISED_HOST_NAME: localhost
 
       CONNECT_CONFIG_STORAGE_TOPIC: connect-config
       CONNECT_OFFSET_STORAGE_TOPIC: connect-offset
@@ -77,5 +79,4 @@ services:
       CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
 
-      CONNECT_PLUGIN_PATH: /usr/share/java/confluentinc/cp-kafka-connect:7.1.1
-      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
+      CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
