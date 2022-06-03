@@ -8,12 +8,12 @@ lazy val commonSettings = Seq(
   resolvers += "Confluent Maven Repository" at "https://packages.confluent.io/maven/"
 )
 
-lazy val root = (project in file(".")).aggregate(avro, srvc_drone, srvc_analysis, srvc_alert)
+lazy val root = (project in file(".")).aggregate(srvc_schema, srvc_drone, srvc_analysis, srvc_alert)
 
-lazy val avro = (project in file("avro"))
+lazy val srvc_schema = (project in file("srvc_schema"))
   .settings(commonSettings)
   .settings(
-    name := "avro",
+    name := "srvc_schema",
     libraryDependencies ++= Seq(Libs.avro4sCore, Libs.sttp3Core, Libs.sttp3Circe, Libs.circeGeneric, Libs.smlTagging)
   )
 
@@ -23,7 +23,7 @@ lazy val srvc_drone = (project in file("srvc_drone"))
     name := "srvc_drone",
     libraryDependencies ++= Seq(Libs.kafkaClient, Libs.kafkaAvro, Libs.catsEffect)
   )
-  .dependsOn(avro)
+  .dependsOn(srvc_schema)
 
 lazy val srvc_analysis = (project in file("srvc_analysis"))
   .settings(commonSettings)
@@ -31,7 +31,7 @@ lazy val srvc_analysis = (project in file("srvc_analysis"))
     name := "srvc_analysis",
     libraryDependencies ++= Seq(Libs.kafkaClient, Libs.kafkaAvro, Libs.catsEffect)
   )
-  .dependsOn(avro)
+  .dependsOn(srvc_schema)
 
 lazy val srvc_alert = (project in file("srvc_alert"))
   .settings(commonSettings)
@@ -39,4 +39,4 @@ lazy val srvc_alert = (project in file("srvc_alert"))
     name := "srvc_alert",
     libraryDependencies ++= Seq(Libs.kafkaStreamsScala, Libs.kafkaStreamsAvro, Libs.avro4sKafka)
   )
-  .dependsOn(avro)
+  .dependsOn(srvc_schema)

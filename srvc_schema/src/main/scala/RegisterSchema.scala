@@ -9,8 +9,6 @@ import java.util.Date
 object RegisterSchema extends App {
 
     // Define the data format of our drones reports
-    case class ReportId(value: Int)
-
     case class Citizen(name: String, peaceScore: Int)
 
     case class DroneReport(
@@ -30,10 +28,10 @@ object RegisterSchema extends App {
     type KeyRecordFormat[K] = RecordFormat[K] @@ KeyRFTag
     type ValueRecordFormat[V] = RecordFormat[V] @@ ValueRFTag
 
-    val reportIdSchema: Schema = AvroSchema[ReportId]
+    val reportIdSchema: Schema = AvroSchema[Int]
     val droneReportSchema: Schema = AvroSchema[DroneReport]
 
-    implicit val reportIdRF: KeyRecordFormat[ReportId] = RecordFormat[ReportId].taggedWith[KeyRFTag]
+    implicit val reportIdRF: KeyRecordFormat[Int] = RecordFormat[Int].taggedWith[KeyRFTag]
     implicit val droneReportRF: ValueRecordFormat[DroneReport] = RecordFormat[DroneReport].taggedWith[ValueRFTag]
 
     // Register our format in the schema Registry with API endpoints calls
