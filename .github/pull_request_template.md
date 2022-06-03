@@ -1,7 +1,5 @@
 # Description
 
-## Goal
-
 Closes #Todo
 
 ## Todo before merge
