@@ -10,6 +10,12 @@ object Dependencies {
     val circe = "0.14.1"
     val cats = "3.2.5"
     val smlCommon = "2.3.1"
+
+    val http4sVersion = "0.23.12"
+    val circeVersion = "0.14.2"
+    val munitVersion = "0.7.29"
+    val logbackVersion = "1.2.10"
+    val munitCatsEffectVersion = "1.0.7"
   }
 
   object Libs {
@@ -29,5 +35,14 @@ object Dependencies {
     val catsEffect = "org.typelevel" %% "cats-effect" % V.cats
 
     val smlTagging = "com.softwaremill.common" %% "tagging" % V.smlCommon
+
+    val http4sEmberServer = "org.http4s"      %% "http4s-ember-server" % V.http4sVersion
+    val http4sEmberClient = "org.http4s"      %% "http4s-ember-client" % V.http4sVersion
+    val https4sCirce = "org.http4s"      %% "http4s-circe"        % V.http4sVersion
+    val http4Sdsl = "org.http4s"      %% "http4s-dsl"          % V.http4sVersion
+    val munit = "org.scalameta"   %% "munit"               % V.munitVersion           % Test
+    val munitCat = "org.typelevel"   %% "munit-cats-effect-3" % V.munitCatsEffectVersion % Test
+    val logback = "ch.qos.logback"  %  "logback-classic"     % V.logbackVersion         % Runtime
+    val svmSubs = "org.scalameta"   %% "svm-subs"            % "20.2.0"
   }
 }

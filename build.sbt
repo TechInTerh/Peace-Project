@@ -43,3 +43,13 @@ lazy val srvc_alert = (project in file("srvc_alert"))
     libraryDependencies ++= Seq(Libs.kafkaStreamsScala, Libs.kafkaStreamsAvro, Libs.avro4sKafka)
   )
   .dependsOn(domain, avro)
+
+lazy val srvc_back = (project in file("srvc_back/srvc_back"))
+  .settings(commonSettings)
+  .settings(
+    name := "srvc_back",
+    libraryDependencies ++= Seq(Libs.http4sEmberServer, Libs.http4sEmberClient, Libs.https4sCirce,
+                                Libs.http4Sdsl, Libs.munit, Libs.munitCat, Libs.logback,
+                                Libs.svmSubs, Libs.circeGeneric)
+  )
+  .dependsOn(domain, avro)
