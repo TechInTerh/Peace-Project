@@ -4,6 +4,7 @@ import cats.effect.Sync
 import cats.implicits._
 import org.http4s.HttpRoutes
 import org.http4s.dsl.Http4sDsl
+import scala.language.higherKinds
 
 object Srvc_backRoutes {
 
@@ -12,10 +13,7 @@ object Srvc_backRoutes {
     import dsl._
     HttpRoutes.of[F] {
       case POST -> Root / "alert" =>
-        for {
-          p <- A.get
-          resp <- Ok(p)
-        } yield resp
+        Ok(A.get)
     }
   }
 }

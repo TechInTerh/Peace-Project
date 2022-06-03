@@ -8,6 +8,7 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Printed
 import org.apache.kafka.streams.kstream.ForeachAction
 import sttp.client3.{HttpURLConnectionBackend, _}
+import scala.annotation.tailrec
 
 object Main extends App {
   def send(value: String): Unit = {
@@ -43,6 +44,9 @@ object Main extends App {
   streams.close()
 }))
 
-  while (true) {
+  @tailrec
+  def run(): Unit = {
+    run();
   }
+  run();
 }
