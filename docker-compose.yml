@@ -3,6 +3,9 @@ version: '3.5'
 services:
   zookeeper:
     image: "confluentinc/cp-zookeeper:latest"
+    hostname: zookeeper
+    networks:
+      - peace-project-net
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
 
@@ -10,8 +13,11 @@ services:
     image: "confluentinc/cp-enterprise-kafka:latest"
     depends_on:
       - zookeeper
+    hostname: kafka
     ports:
       - 9092:9092
+    networks:
+      - peace-project-net
     environment:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -21,10 +27,12 @@ services:
   schema-registry:
     image: "confluentinc/cp-schema-registry:latest"
     depends_on:
-      - zookeeper
       - kafka
+    hostname: schema-registry
     ports:
       - 8081:8081
+    networks:
+      - peace-project-net
     restart: on-failure
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
@@ -36,6 +44,8 @@ services:
     ports:
         - 9000:9000
         - 9001:9001
+    networks:
+      - peace-project-net
     command: server /data --console-address ":9001"
     environment:
         MINIO_ROOT_USER: minioadmin
@@ -45,6 +55,8 @@ services:
       image: minio/mc
       depends_on:
           - minio
+      networks:
+      - peace-project-net
       entrypoint: >
           /bin/sh -c -e "
           until (/usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin) do echo '...waiting...' && sleep 1; done;
@@ -55,8 +67,13 @@ services:
   kafka-connect:
     image: srvc_connect
     build: srvc_connect
+    depends_on:
+      - schema-registry
+      - create-buckets
     ports:
       - 8083:8083
+    networks:
+      - peace-project-net
     environment:
       CONNECT_REST_PORT: 8083
       CONNECT_GROUP_ID: srvc_connect
@@ -86,6 +103,8 @@ services:
     build: .
     depends_on:
       - schema-registry
+    networks:
+      - peace-project-net
     command: /ops/sbt/bin/sbt "project avro" run
 
   srvc_drone:
@@ -93,6 +112,8 @@ services:
     build: .
     depends_on:
       - avro
+    networks:
+      - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_drone" run
 
   srvc_analysis:
@@ -100,6 +121,8 @@ services:
     build: .
     depends_on:
       - kafka-connect
+    networks:
+      - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_analysis" run
 
   srvc_alert:
@@ -107,4 +130,9 @@ services:
     build: .
     depends_on:
       - avro
+    networks:
+      - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_alert" run
+
+networks:
+  peace-project-net:

@@ -11,9 +11,3 @@ RUN unzip sbt-$SBT_VERSION.zip -d ops
 WORKDIR /workdir
 
 ADD . /workdir
-
-# ARG PROJECT_NAME
-# ENV PROJECT_NAME=$PROJECT_NAME
-# ENV ARG="project $PROJECT_NAME"
-
-# CMD /ops/sbt/bin/sbt "$ARG" run

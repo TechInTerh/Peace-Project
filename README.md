@@ -43,6 +43,13 @@ docker-compose down
 
 TODO: UPDATE THIS PART
 
+Our apps reach kafka using docker hostnames, so you need to add those two entry in `/etc/hosts`.
+
+```txt
+127.0.0.1 kafka
+127.0.0.1 schema-registry
+```
+
 This directory contains 4 sbt projects each being independent app:
 
 - `avro`: generates and registers _Avro_ schemas for our report datas
