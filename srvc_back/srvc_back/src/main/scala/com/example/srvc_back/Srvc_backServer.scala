@@ -14,16 +14,14 @@ object Srvc_backServer {
   def stream[F[_]: Async]: Stream[F, Nothing] = {
     for {
       client <- Stream.resource(EmberClientBuilder.default[F].build)
-      helloWorldAlg = HelloWorld.impl[F]
-      jokeAlg = Jokes.impl[F](client)
+      alertAlg = Alerts.impl[F](client)
 
       // Combine Service Routes into an HttpApp.
       // Can also be done via a Router if you
       // want to extract segments not checked
       // in the underlying routes.
       httpApp = (
-        Srvc_backRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
-        Srvc_backRoutes.jokeRoutes[F](jokeAlg)
+        Srvc_backRoutes.alertRoutes[F](alertAlg)
       ).orNotFound
 
       // With Middlewares in place

@@ -5,7 +5,9 @@ version := "0.1"
 
 lazy val commonSettings = Seq(
   scalaVersion := "2.13.0",
-  resolvers += "Confluent Maven Repository" at "https://packages.confluent.io/maven/"
+  resolvers += "Confluent Maven Repository" at "https://packages.confluent.io/maven/",
+  scalacOptions += "-deprecation",
+  scalacOptions += "-feature"
 )
 
 lazy val root = (project in file(".")).aggregate(avro, srvc_drone, srvc_analysis, srvc_alert)
