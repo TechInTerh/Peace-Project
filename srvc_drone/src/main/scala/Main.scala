@@ -1,7 +1,12 @@
+import model.DroneReportModel._
+import registry.SchemaRegistry._
+
 import java.util.Properties
 import org.apache.kafka.clients.producer._
 
 object Main extends App {
+
+    registerSchema()
 
     val props = new Properties()
     props.put("bootstrap.servers", "localhost:9092")

@@ -98,20 +98,11 @@ services:
 
       CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
 
-  avro:
-    image: avro
-    build: .
-    depends_on:
-      - schema-registry
-    networks:
-      - peace-project-net
-    command: /ops/sbt/bin/sbt "project avro" run
-
   srvc_drone:
     image: srvc_drone
     build: .
     depends_on:
-      - avro
+      - schema-registry
     networks:
       - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_drone" run
@@ -129,7 +120,7 @@ services:
     image: srvc_alert
     build: .
     depends_on:
-      - avro
+      - srvc_drone
     networks:
       - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_alert" run
