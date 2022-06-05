@@ -9,9 +9,9 @@ package object DroneReportModel {
         droneId: Int,
         latitude: Double,
         longitude: Double,
-        citizens: Vector[Citizen],
-        words: Vector[String],
+        citizens: Array[Citizen],
+        words: Array[String],
         // Avro cringe with Date type, so we'll just use String and set a format
-        timestamp: String
+        timestamp: Long
     )
 }

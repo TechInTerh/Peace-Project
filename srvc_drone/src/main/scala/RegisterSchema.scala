@@ -20,7 +20,6 @@ package object SchemaRegistry {
 
     val reportIdSchema: Schema = AvroSchema[Int]
     val droneReportSchema: Schema = AvroSchema[DroneReport]
-    val citizenSchema: Schema = AvroSchema[Citizen]
 
     implicit val reportIdRF: KeyRecordFormat[Int] = RecordFormat[Int].taggedWith[KeyRFTag]
     implicit val droneReportRF: ValueRecordFormat[DroneReport] = RecordFormat[DroneReport].taggedWith[ValueRFTag]
