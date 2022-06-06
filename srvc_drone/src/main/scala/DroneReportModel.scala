@@ -11,7 +11,6 @@ package object DroneReportModel {
         longitude: Double,
         citizens: Array[Citizen],
         words: Array[String],
-        // Avro cringe with Date type, so we'll just use String and set a format
-        timestamp: Long
+        timestamp: Long // Epoch format
     )
 }

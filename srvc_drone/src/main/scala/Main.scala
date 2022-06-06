@@ -7,22 +7,30 @@ import java.util.Properties
 import org.apache.avro.{ Schema }
 import org.apache.avro.generic.{ GenericData, GenericRecord }
 import org.apache.kafka.clients.producer._
+import scala.util.Random
 import scala.jdk.CollectionConverters._
 
 import scala.util.{ Failure, Success }
 
 object Main extends App {
 
+    // Service parameters
     val TOPIC_NAME = "drone-report"
     val NB_DRONES = 10
-    val NB_REPORTS_PER_DRONE = 100
+    val MAX_REPORTS_PER_DRONE = 100
+    val MAX_PEACE_SCORE = 100
+    val MAX_LONGITUDE = 150.0
+    val MAX_LATITUDE = 200.0
+    val MAX_WORDS_PER_REPORT = 3
 
+    // Schema initialization
     println("Start registering AVRO schemas ...")
     registerSchema()
     println("Finish registering AVRO schemas !")
 
-    println(s"Start producing $NB_REPORTS_PER_DRONE records on $TOPIC_NAME ...")
+    println(s"Start producing records on $TOPIC_NAME ...")
 
+    // Instantiate a producer with proper parameters
     val props: Map[String, Object] = Map(
         ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "kafka:9092",
         ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG -> classOf[KafkaAvroSerializer],
@@ -32,30 +40,51 @@ object Main extends App {
 
     val producer = new KafkaProducer[Int, GenericRecord](props.asJava)
 
-    (1 to NB_REPORTS_PER_DRONE).foreach { reportId =>
-        val words = new GenericData.Array[String](5, Schema.createArray(AvroSchema[String]));
-        val citizens = new GenericData.Array[GenericData.Record](1, Schema.createArray(AvroSchema[Citizen]));
+    val citizenNames = List(
+        "Adrien", "Alain", "Alexandre", "Timothée", "Victor",
+        "Camille", "Lea", "Patricia", "Chloé", "Juliette"
+    )
 
-        List("word1", "word2", "word3", "word4", "word5").foreach(word => words.add(word))
+    val dictionary = List(
+        "Fight", "Government", "Peace", "Peacefull", "PeaceLand",
+        "PeaceWatcher", "Revolution", "Terrorism", "Working", "War"
+    )
 
-        val citizen = new GenericData.Record(AvroSchema[Citizen])
-        citizen.put("name", "Patrick")
-        citizen.put("peaceScore", 80)
-        citizens.add(citizen)
+    (1 to NB_DRONES).foreach { droneId =>
+        (1 to Random.nextInt(MAX_REPORTS_PER_DRONE)).foreach { reportId =>
+            // Needed to create a record with AVRO schemas
+            val words = new GenericData.Array[String](MAX_WORDS_PER_REPORT, Schema.createArray(AvroSchema[String]));
+            val citizens = new GenericData.Array[GenericData.Record](citizenNames.length, Schema.createArray(AvroSchema[Citizen]));
 
-        val droneReport = new GenericData.Record(droneReportSchema)
-        droneReport.put("droneId", 4)
-        droneReport.put("latitude", 10.5)
-        droneReport.put("longitude", 10.5)
-        droneReport.put("timestamp", System.currentTimeMillis())
-        droneReport.put("words", words)
-        droneReport.put("citizens", citizens)
+            // Add random words
+            (1 to Random.nextInt(MAX_WORDS_PER_REPORT)).foreach { _ =>
+                val word = dictionary(Random.nextInt(dictionary.length))
+                words.add(word)
+            }
 
-        val record = new ProducerRecord[Int, GenericRecord](TOPIC_NAME, reportId, droneReport)
-        producer.send(record)
+            // Add random citizens to our record
+            (1 to Random.nextInt(citizenNames.length)).foreach { _ =>
+                val citizen = new GenericData.Record(AvroSchema[Citizen])
+                citizen.put("name", citizenNames(Random.nextInt(citizenNames.length)))
+                citizen.put("peaceScore", Random.nextInt(MAX_PEACE_SCORE))
+                citizens.add(citizen)
+            }
+
+            // Create a record and fill it with random data
+            val droneReport = new GenericData.Record(droneReportSchema)
+            droneReport.put("droneId", droneId)
+            droneReport.put("latitude", Random.nextDouble() * MAX_LATITUDE)
+            droneReport.put("longitude", Random.nextDouble() * MAX_LONGITUDE)
+            droneReport.put("timestamp", System.currentTimeMillis())
+            droneReport.put("words", words)
+            droneReport.put("citizens", citizens)
+
+            val record = new ProducerRecord[Int, GenericRecord](TOPIC_NAME, reportId, droneReport)
+            producer.send(record)
+        }
     }
 
     producer.close()
 
-    println(s"Successfully produced $NB_REPORTS_PER_DRONE records on $TOPIC_NAME !")
+    println(s"Successfully produced records on $TOPIC_NAME !")
 }
