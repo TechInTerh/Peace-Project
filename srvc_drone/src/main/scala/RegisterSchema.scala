@@ -43,7 +43,7 @@ package object SchemaRegistry {
                     .code
         }.foreach {
             case (subject, code) =>
-                println(s"Register schema $subject, response status code $code")
+                println(s"Registered new schema version on subject: $subject, response status code $code")
         }
     }
 }
