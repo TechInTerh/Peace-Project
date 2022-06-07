@@ -30,21 +30,19 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % "2.3.0"
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.3.0"
 libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "2.8.2"
 //Add Hadoop 2.8.2
-libraryDependencies += "org.apache.hadoop" % "hadoop-aws" % "2.8.3"
+libraryDependencies += "org.apache.hadoop" % "hadoop-aws" % "2.8.2"
 
 
 //Add HttpClient 4.5.3
-libraryDependencies += "org.apache.httpcomponents" % "httpclient" % "4.5.3"
+//libraryDependencies += "org.apache.httpcomponents" % "httpclient" % "4.5.3"
 //Add Joda Time 2.9.9
-libraryDependencies += "joda-time" % "joda-time" % "2.9.9"
+//libraryDependencies += "joda-time" % "joda-time" % "2.9.9"
 //Add AWS SDK FOr Java Cor 1.11.234
 libraryDependencies += "com.amazonaws" % "aws-java-sdk-s3" % "1.11.234"
 //Add AWS For Java 1.11.234
 libraryDependencies += "com.amazonaws" % "aws-java-sdk-core" % "1.11.234"
 // Add Aws Java SDK for AWS KMS 1.11.234
 libraryDependencies += "com.amazonaws" % "aws-java-sdk-kms" % "1.11.234"
-// Add Aws Java SDK for Amazon S3 1.11.234
-libraryDependencies += "com.amazonaws" % "aws-java-sdk-s3" % "1.11.234"
 
 
 
