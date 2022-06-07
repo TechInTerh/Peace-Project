@@ -48,6 +48,7 @@ Our apps reach kafka using docker hostnames, so you need to add those two entry 
 ```txt
 127.0.0.1 kafka
 127.0.0.1 schema-registry
+127.0.0.1 minio
 ```
 
 This directory contains 4 sbt projects each being independent app:
