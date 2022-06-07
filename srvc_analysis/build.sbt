@@ -31,6 +31,9 @@ libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.3.0"
 libraryDependencies += "org.apache.hadoop" % "hadoop-client" % "2.8.2"
 //Add Hadoop 2.8.2
 libraryDependencies += "org.apache.hadoop" % "hadoop-aws" % "2.8.2"
+//Add avro4s
+libraryDependencies += "com.sksamuel.avro4s" % "avro4s-core_2.13" % "4.0.10"
+
 
 
 //Add HttpClient 4.5.3
