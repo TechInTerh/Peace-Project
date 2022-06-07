@@ -103,6 +103,7 @@ services:
     build: .
     depends_on:
       - schema-registry
+      - kafka-connect
     networks:
       - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_drone" run
@@ -111,7 +112,7 @@ services:
     image: srvc_analysis
     build: .
     depends_on:
-      - kafka-connect
+      - srvc_drone
     networks:
       - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_analysis" run
