@@ -22,6 +22,6 @@ export class AppComponent {
 
 	refresh_list(){
 		console.log("Refreshing list");
-	}
+}
 
 }
