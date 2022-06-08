@@ -67,25 +67,13 @@ services:
         MINIO_ROOT_USER: minioadmin
         MINIO_ROOT_PASSWORD: minioadmin
 
-  create-buckets:
-    image: minio/mc:RELEASE.2022-05-09T04-08-26Z
-    depends_on:
-      minio:
-        condition: service_healthy
-    entrypoint: >
-        /bin/sh -c -e "
-        /usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin;
-        /usr/bin/mc mb -p myminio/kafka-bucket;
-        /usr/bin/mc policy set public myminio/kafka-bucket;
-        "
-
   kafka-connect:
     image: srvc_connect
     build: srvc_connect
     ports:
       - 8083:8083
     depends_on:
-      create-buckets:
+      minio:
         condition: service_started
       schema-registry:
         condition: service_healthy
@@ -118,12 +106,22 @@ services:
 
       CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
 
+  init-kafka-connector:
+    image: minio/mc:RELEASE.2022-05-09T04-08-26Z
+    volumes:
+      - './srvc_connect:/srvc_connect'
+    depends_on:
+      kafka-connect:
+        condition: service_started
+    restart: on-failure
+    entrypoint: sh /srvc_connect/init-connector.sh
+
   srvc_drone:
     image: srvc_drone
     build: .
     command: /ops/sbt/bin/sbt "project srvc_drone" run
     depends_on:
-      kafka-connect:
+      init-kafka-connector:
         condition: service_started
 
   srvc_analysis:
@@ -131,7 +129,7 @@ services:
     build: .
     command: /ops/sbt/bin/sbt "project srvc_analysis" run
     depends_on:
-      create-buckets:
+      minio:
         condition: service_started
 
   srvc_alert:

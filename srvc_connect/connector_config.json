@@ -1,5 +1,5 @@
 {
-    "name" : "s3-sink",
+    "name" : "s3-sink-connector",
     "config": {
         "aws.access.key.id" : "minioadmin",
         "aws.secret.access.key": "minioadmin",
