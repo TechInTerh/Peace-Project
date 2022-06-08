@@ -43,7 +43,7 @@ lazy val srvc_alert = (project in file("srvc_alert"))
   )
   .dependsOn(avro)
 
-lazy val srvc_back = (project in file("srvc_back/srvc_back"))
+lazy val srvc_back = (project in file("srvc_back"))
   .settings(commonSettings)
   .settings(
     name := "srvc_back",
