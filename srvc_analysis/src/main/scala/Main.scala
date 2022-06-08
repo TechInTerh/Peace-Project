@@ -1,3 +1,5 @@
+import java.util.Properties
+
 import org.apache.avro.reflect.AvroSchema
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
@@ -23,17 +25,9 @@ object Main extends App {
     .config("fs.s3a.fast.upload", "true")
     .getOrCreate()
 
-  val spark = SparkSession.builder().appName("Peace-Analyzer")
-    .master("local[4]")
-    .config("fs.s3a.access.key", "minioadmin")
-    .config("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
-    .config("fs.s3a.endpoint", "http://127.0.0.1:9000")
-    .config("fs.s3a.access.key", "minioadmin")
-    .config("fs.s3a.secret.key", "minioadmin")
-    .config("fs.s3a.path.style.access", "true")
-    .config("fs.s3a.multipart.size", "10485760")
-    .config("fs.s3a.fast.upload", "true")
-    .getOrCreate()
+
+
+  /*
 
   spark.read.option("header", "true").csv("s3a://spark-test/test.csv").show()
 
@@ -57,4 +51,5 @@ object Main extends App {
 
     println(dronereport.mkString("\n"))
   }
+  */
 }
