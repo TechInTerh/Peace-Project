@@ -2,6 +2,7 @@ import model.DroneReportModel._
 import registry.SchemaRegistry._
 
 import com.sksamuel.avro4s.AvroSchema
+import scala.language.higherKinds
 import io.confluent.kafka.serializers.{ AbstractKafkaAvroSerDeConfig, KafkaAvroSerializer }
 import java.util.Properties
 import org.apache.avro.{ Schema }
