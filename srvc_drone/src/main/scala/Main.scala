@@ -9,8 +9,8 @@ import org.apache.avro.{ Schema }
 import org.apache.avro.generic.{ GenericData, GenericRecordBuilder, GenericRecord }
 import org.apache.kafka.clients.producer._
 import scala.util.Random
+import scala.annotation.tailrec
 import scala.jdk.CollectionConverters._
-
 import scala.util.{ Failure, Success }
 
 object Main extends App {
@@ -52,6 +52,7 @@ object Main extends App {
         "PeaceWatcher", "Revolution", "Terrorism", "Working", "War"
     )
 
+    @tailrec
     def selectRandomElements(srcList: List[String], dstList: List[String], nbElement: Int) : List[String] = {
         if (nbElement == 0) {
             return dstList
@@ -67,19 +68,17 @@ object Main extends App {
 
     (1 to NB_DRONES).foreach { droneId =>
         (1 to Random.nextInt(MAX_REPORTS_PER_DRONE)).foreach { reportId =>
-            // Needed to create a record with AVRO schemas
-            val words = new GenericData.Array[String](MAX_WORDS_PER_REPORT, Schema.createArray(AvroSchema[String]));
-            val citizens = new GenericData.Array[GenericData.Record](citizenNames.length, Schema.createArray(AvroSchema[Citizen]));
-
-            // Add random words
-            selectRandomElements(dictionary, List(), Random.nextInt(MAX_WORDS_PER_REPORT)).foreach { words.add(_) }
-
-            // Add random citizens to our record
-            selectRandomElements(citizenNames, List(), Random.nextInt(MAX_CITIZENS_PER_REPORT)).map {
+            // Select random number of words and citizens
+            val selectedWords = selectRandomElements(dictionary, List(), Random.nextInt(MAX_WORDS_PER_REPORT))
+            val selectedCitizens = selectRandomElements(citizenNames, List(), Random.nextInt(MAX_CITIZENS_PER_REPORT)).map {
                 new GenericRecordBuilder(AvroSchema[Citizen]).set("name", _)
                                                              .set("peaceScore", Random.nextInt(MAX_PEACE_SCORE))
                                                              .build()
-            }.foreach { citizens.add(_) }
+            }
+
+            // Add them in the correct array structs
+            val words = new GenericData.Array[String](Schema.createArray(AvroSchema[String]), selectedWords.asJava);
+            val citizens = new GenericData.Array[GenericData.Record](Schema.createArray(AvroSchema[Citizen]), selectedCitizens.asJava);
 
             // Create a record and fill it with random data
             val droneReport = new GenericData.Record(droneReportSchema)
