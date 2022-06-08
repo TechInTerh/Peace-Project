@@ -2,45 +2,63 @@ version: '3.5'
 
 services:
   zookeeper:
-    image: "confluentinc/cp-zookeeper:latest"
+    image: "confluentinc/cp-zookeeper:7.1.0"
     hostname: zookeeper
     networks:
       - peace-project-net
+    ports:
+      - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+    healthcheck:
+      test: nc -vz localhost 2181
+      interval: 5s
+      timeout: 30s
+      retries: 5
 
   kafka:
-    image: "confluentinc/cp-enterprise-kafka:latest"
-    depends_on:
-      - zookeeper
+    image: "confluentinc/cp-enterprise-kafka:7.1.0"
     hostname: kafka
-    ports:
-      - 9092:9092
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     networks:
       - peace-project-net
+    ports:
+      - 9092:9092
     environment:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "drone-report:1:1"
+    healthcheck:
+      test: nc -vz localhost 9092
+      interval: 5s
+      timeout: 30s
+      retries: 5
 
   schema-registry:
-    image: "confluentinc/cp-schema-registry:latest"
+    image: "confluentinc/cp-schema-registry:7.1.0"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     hostname: schema-registry
     ports:
       - 8081:8081
     networks:
       - peace-project-net
-    restart: on-failure
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
       SCHEMA_REGISTRY_LISTENERS: http://schema-registry:8081
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
+    healthcheck:
+      test: curl --fail http://schema-registry:8081/
+      interval: 5s
+      timeout: 30s
+      retries: 5
 
   minio:
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2022-06-07T00-33-41Z.fips
     ports:
         - 9000:9000
         - 9001:9001
@@ -50,11 +68,17 @@ services:
     environment:
         MINIO_ROOT_USER: minioadmin
         MINIO_ROOT_PASSWORD: minioadmin
+    healthcheck:
+      test: curl http://minio:9000
+      interval: 3s
+      timeout: 30s
+      retries: 5
 
   create-buckets:
-      image: minio/mc
+      image: minio/mc:RELEASE.2022-05-09T04-08-26Z
       depends_on:
-          - minio
+        minio:
+          condition: service_healthy
       networks:
       - peace-project-net
       entrypoint: >
@@ -68,12 +92,19 @@ services:
     image: srvc_connect
     build: srvc_connect
     depends_on:
-      - schema-registry
-      - create-buckets
+      create-buckets:
+        condition: service_started
+      schema-registry:
+        condition: service_healthy
     ports:
       - 8083:8083
     networks:
       - peace-project-net
+    healthcheck:
+      test: "curl --fail http://srvc_connect:8083/connectors"
+      interval: 3s
+      timeout: 30s
+      retries: 5
     environment:
       CONNECT_REST_PORT: 8083
       CONNECT_GROUP_ID: srvc_connect
@@ -102,8 +133,8 @@ services:
     image: srvc_drone
     build: .
     depends_on:
-      - schema-registry
-      - kafka-connect
+      kafka-connect:
+        condition: service_started
     networks:
       - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_drone" run
@@ -112,7 +143,8 @@ services:
     image: srvc_analysis
     build: .
     depends_on:
-      - srvc_drone
+      kafka-connect:
+        condition: service_started
     networks:
       - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_analysis" run
@@ -121,7 +153,8 @@ services:
     image: srvc_alert
     build: .
     depends_on:
-      - srvc_drone
+      kafka-connect:
+        condition: service_started
     networks:
       - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_alert" run
