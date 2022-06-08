@@ -1,10 +1,10 @@
 import java.util.Properties
-
 import org.apache.avro.reflect.AvroSchema
+import org.apache.hadoop.conf.Configuration
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
-
-import scala.reflect.io.File
+import org.apache.hadoop.fs.{FileSystem, Path}
+//import registry.SchemaRegistry._
 
 object Main extends App {
   def add_File(sc: SparkContext, file_path: String, file_name: String): Unit = {
@@ -15,7 +15,6 @@ object Main extends App {
 
   val spark = SparkSession.builder().appName("Peace-Analyzer")
     .master("local[4]")
-    .config("fs.s3a.access.key", "minioadmin")
     .config("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
     .config("fs.s3a.endpoint", "http://127.0.0.1:9000")
     .config("fs.s3a.access.key", "minioadmin")
@@ -25,31 +24,11 @@ object Main extends App {
     .config("fs.s3a.fast.upload", "true")
     .getOrCreate()
 
-
-
-  /*
-
   spark.read.option("header", "true").csv("s3a://spark-test/test.csv").show()
 
-  def getListOfFiles(): List[File] = {
-    val bucketname = "s3a://spark-test/"
-    val bucketfile = new File(bucketname)
-
-    if (bucketfile.exists && bucketfile.isDirectory) {
-      bucketfile.listFiles.filter(_.isFile).toList
-    } else {
-      List[File]()
-    }
-  }
-
-  val schema = AvroSchema[DroneReportModel]
-  val listoffilesbucket = getListOfFiles()
-  for (fileavro <- listoffilesbucket) {
-    val is = AvroInputStream.data[DroneReportModel].from(fileavro).build(schema)
-    val dronereport = is.iterator.toSet
-    is.close()
-
-    println(dronereport.mkString("\n"))
-  }
-  */
+  spark.read.format("avro").load("s3a://spark-test/test.avro").show()
+/*
+  val fs = FileSystem.get(new Configuration())
+  val status = fs.listStatus(new Path("s3a://spark-test"))
+  status.foreach(x=> println(x.getPath))*/
 }
