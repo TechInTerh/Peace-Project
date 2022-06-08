@@ -40,7 +40,7 @@ lazy val srvc_back = (project in file("srvc_back"))
   .settings(
     name := "srvc_back",
     libraryDependencies ++= Seq(Libs.http4sEmberServer, Libs.http4sEmberClient, Libs.https4sCirce,
-                                Libs.http4Sdsl, Libs.munit, Libs.munitCat, Libs.logback,
-                                Libs.svmSubs, Libs.circeGeneric)
+                                Libs.http4Sdsl, Libs.logback,
+                                Libs.circeGeneric)
   )
   .dependsOn(srvc_alert)
