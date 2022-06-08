@@ -81,8 +81,6 @@ object Main extends App {
                                                              .build()
             }.foreach { citizens.add(_) }
 
-            println(citizens)
-
             // Create a record and fill it with random data
             val droneReport = new GenericData.Record(droneReportSchema)
             droneReport.put("droneId", droneId)
