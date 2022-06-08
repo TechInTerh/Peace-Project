@@ -131,8 +131,6 @@ services:
     build: .
     ports:
       - 8080:8080
-    depends_on:
-      - avro
     networks:
       - peace-project-net
     command: /opt/sbt/bin/sbt "project srvc_back" run
