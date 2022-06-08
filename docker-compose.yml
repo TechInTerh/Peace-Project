@@ -87,8 +87,8 @@ services:
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
 
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: schema-registry:8081
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: schema-registry:8081
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
       CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
@@ -98,20 +98,12 @@ services:
 
       CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
 
-  avro:
-    image: avro
-    build: .
-    depends_on:
-      - schema-registry
-    networks:
-      - peace-project-net
-    command: /ops/sbt/bin/sbt "project avro" run
-
   srvc_drone:
     image: srvc_drone
     build: .
     depends_on:
-      - avro
+      - schema-registry
+      - kafka-connect
     networks:
       - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_drone" run
@@ -120,7 +112,7 @@ services:
     image: srvc_analysis
     build: .
     depends_on:
-      - kafka-connect
+      - srvc_drone
     networks:
       - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_analysis" run
@@ -129,7 +121,7 @@ services:
     image: srvc_alert
     build: .
     depends_on:
-      - avro
+      - srvc_drone
     networks:
       - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_alert" run

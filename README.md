@@ -48,11 +48,11 @@ Our apps reach kafka using docker hostnames, so you need to add those two entry 
 ```txt
 127.0.0.1 kafka
 127.0.0.1 schema-registry
+127.0.0.1 minio
 ```
 
 This directory contains 4 sbt projects each being independent app:
 
-- `avro`: generates and registers _Avro_ schemas for our report datas
 - `srvc_drone`: produces drone random data to the specified kafka topic.
 - `srvc_analysis`: Consume data from kafka topics to analyze them with Spark.
 - `srvc_alert`: Consume data from kafka topics to send alerts to peacewatchers.
@@ -70,7 +70,7 @@ Example:
 sbt "project srvc_drone" run
 ```
 
-Please run `avro` and `srvc_drone` first.
+Please run `srvc_drone` first.
 To remove all generated files, use the following command:
 
 ```sh
