@@ -126,5 +126,13 @@ services:
       - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_alert" run
 
+  srvc_back:
+    image: srvc_back
+    build: .
+    ports:
+      - 8080:8080
+    networks:
+      - peace-project-net
+    command: /opt/sbt/bin/sbt "project srvc_back" run
 networks:
   peace-project-net:

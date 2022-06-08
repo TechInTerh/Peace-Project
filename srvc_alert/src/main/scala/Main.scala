@@ -1,28 +1,52 @@
 import java.util.Properties
-import org.apache.kafka.clients.consumer._
-import org.apache.kafka.common.serialization.StringDeserializer
-
-import java.time.Duration
-import scala.collection.JavaConverters
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.processor.Processor
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.kstream.Printed
+import org.apache.kafka.streams.kstream.ForeachAction
+import sttp.client3.{HttpURLConnectionBackend, _}
+import scala.annotation.tailrec
 
 object Main extends App {
+  def send(value: String): Unit = {
+        val backend = HttpURLConnectionBackend()
+        basicRequest
+                .post(uri"http://localhost:8080/alert")
+                .body(value)
+                .send(backend)
+                .code
+  }
+    val props = new Properties();
+    props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-pipe");
+    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+    props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
-  val props: Properties = new Properties()
-  props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "broker1:9092")
-  props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, classOf[StringDeserializer])
-  props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, classOf[StringDeserializer])
-  props.put(ConsumerConfig.GROUP_ID_CONFIG, classOf[StringDeserializer])
+    val builder = new StreamsBuilder();
+    val source = builder
+                    .stream("drone-report")
 
-  val consumer = new KafkaConsumer[String, String](props)
-  //consumer.subscribe(List("topicname").asJava)
+    source.foreach(new ForeachAction[String, String]() {
+      override def apply(key: String, value: String) : Unit = {
+        send(value)
+      }
+    })
+    val topology = builder.build();
 
-  val records: ConsumerRecords[String, String] = consumer.poll(Duration.ofMillis(100))
+     val streams = new KafkaStreams(topology, props)
 
-  //records.asScala.foreach {record => println(s"Print data here")}
+  streams.start()
 
-  //consumer.subscribe()
+  Runtime.getRuntime.addShutdownHook(new Thread(() => {
+  streams.close()
+}))
 
-  //val jsonString = os.read(os.pwd/"src"/"test"/"resources"/"phil.json")
-  //val data = ujson.read(jsonString)
-  //data.value // LinkedHashMap("first_name" -> Str("Phil"), "last_name" -> Str("Hellmuth"), "birth_year" -> Num(1964.0))
+  @tailrec
+  def run(): Unit = {
+    run();
+  }
+  run();
 }
