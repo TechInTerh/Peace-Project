@@ -4,7 +4,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
 import org.apache.hadoop.fs.{FileSystem, Path}
-//import registry.SchemaRegistry._
+
 
 object Main extends App {
   def add_File(sc: SparkContext, file_path: String, file_name: String): Unit = {
@@ -25,10 +25,9 @@ object Main extends App {
     .getOrCreate()
 
   spark.read.option("header", "true").csv("s3a://spark-test/test.csv").show()
+  spark.read.option("header", "true").csv("s3a://spark-test/*.csv").show()
 
-  spark.read.format("avro").load("s3a://spark-test/test.avro").show()
-/*
-  val fs = FileSystem.get(new Configuration())
-  val status = fs.listStatus(new Path("s3a://spark-test"))
-  status.foreach(x=> println(x.getPath))*/
+  val avrotest = spark.read.format("avro").load("drone-report00000000000.avro")
+
+  //spark.read.format("avro").load("s3a://spark-test/drone-report00000000000.avro").show()
 }
