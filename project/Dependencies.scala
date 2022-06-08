@@ -10,9 +10,8 @@ object Dependencies {
 		val circe = "0.14.1"
 		val cats = "3.2.5"
 		val smlCommon = "2.3.1"
-
-		val spark = "2.3.0"
-		val hadoop = "2.8.2"
+		val spark = "3.2.0"
+		val hadoop = "3.3.1"
 		val amazonAws = "1.11.234"
 		val joda = "2.9.9"
 		val httpComponent = "4.5.3"

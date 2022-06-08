@@ -8,11 +8,6 @@ lazy val commonSettings = Seq(
 	resolvers += "Confluent Maven Repository" at "https://packages.confluent.io/maven/"
 )
 
-lazy val analysis_settings = Seq(
-	scalaVersion := "2.11.12",
-	resolvers += "Confluent Maven Repository" at "https://packages.confluent.io/maven/"
-)
-
 lazy val root = (project in file(".")).aggregate(srvc_drone, srvc_analysis, srvc_alert)
 
 lazy val srvc_drone = (project in file("srvc_drone"))
@@ -23,7 +18,7 @@ lazy val srvc_drone = (project in file("srvc_drone"))
 	)
 
 lazy val srvc_analysis = (project in file("srvc_analysis"))
-	.settings(analysis_settings)
+	.settings(commonSettings)
 	.settings(
 		name := "srvc_analysis",
 		libraryDependencies ++= Seq(Libs.sparkCore, Libs.sparkSql, Libs.hadoopClient, Libs.hadoopCommon, Libs.amazonAws, Libs.amazonAwsS3, Libs.amazonAxsKms)
