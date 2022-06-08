@@ -53,6 +53,8 @@ services:
 
   minio:
     image: minio/minio:RELEASE.2022-06-07T00-33-41Z.fips
+    volumes:
+      - ./data:/data
     hostname: minio
     ports:
         - 9000:9000
@@ -121,16 +123,18 @@ services:
     build: .
     command: /ops/sbt/bin/sbt "project srvc_drone" run
     depends_on:
-      init-kafka-connector:
-        condition: service_started
+      schema-registry:
+        condition: service_healthy
 
   srvc_analysis:
     image: srvc_analysis
     build: .
     command: /ops/sbt/bin/sbt "project srvc_analysis" run
     depends_on:
-      minio:
+      init-kafka-connector:
         condition: service_started
+      schema-registry:
+        condition: service_healthy
 
   srvc_alert:
     image: srvc_alert
