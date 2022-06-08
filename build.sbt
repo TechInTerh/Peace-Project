@@ -25,7 +25,6 @@ lazy val srvc_analysis = (project in file("srvc_analysis"))
     name := "srvc_analysis",
     libraryDependencies ++= Seq(Libs.kafkaClient, Libs.kafkaAvro, Libs.catsEffect)
   )
-  .dependsOn(srvc_drone)
 
 lazy val srvc_alert = (project in file("srvc_alert"))
   .settings(commonSettings)
@@ -33,7 +32,6 @@ lazy val srvc_alert = (project in file("srvc_alert"))
     name := "srvc_alert",
     libraryDependencies ++= Seq(Libs.kafkaStreamsScala, Libs.kafkaStreamsAvro, Libs.avro4sKafka)
   )
-  .dependsOn(srvc_drone)
 
 lazy val srvc_back = (project in file("srvc_back"))
   .settings(commonSettings)
@@ -43,4 +41,3 @@ lazy val srvc_back = (project in file("srvc_back"))
                                 Libs.http4Sdsl, Libs.logback,
                                 Libs.circeGeneric)
   )
-  .dependsOn(srvc_alert)

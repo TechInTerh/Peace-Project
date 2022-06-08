@@ -138,6 +138,9 @@ services:
     image: srvc_alert
     build: .
     command: /ops/sbt/bin/sbt "project srvc_alert" run
+    depends_on:
+      srvc_back:
+        condition: service_started
 
   srvc_back:
     image: srvc_back
@@ -145,6 +148,3 @@ services:
     ports:
       - 8080:8080
     command: /ops/sbt/bin/sbt "project srvc_back" run
-    depends_on:
-      schema-registry:
-        condition: service_healthy
