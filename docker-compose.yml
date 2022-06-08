@@ -2,22 +2,31 @@ version: '3.5'
 
 services:
   zookeeper:
-    image: "confluentinc/cp-zookeeper:latest"
+    image: "confluentinc/cp-zookeeper:7.1.0"
     hostname: zookeeper
-    networks:
-      - peace-project-net
+    ports:
+      - "2181:2181"
+    healthcheck:
+      test: nc -vz localhost 2181
+      interval: 5s
+      timeout: 30s
+      retries: 5
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
 
   kafka:
-    image: "confluentinc/cp-enterprise-kafka:latest"
-    depends_on:
-      - zookeeper
+    image: "confluentinc/cp-enterprise-kafka:7.1.0"
     hostname: kafka
     ports:
       - 9092:9092
-    networks:
-      - peace-project-net
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    healthcheck:
+      test: nc -vz localhost 9092
+      interval: 5s
+      timeout: 30s
+      retries: 5
     environment:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -25,55 +34,56 @@ services:
       KAFKA_CREATE_TOPICS: "drone-report:1:1"
 
   schema-registry:
-    image: "confluentinc/cp-schema-registry:latest"
-    depends_on:
-      - kafka
+    image: "confluentinc/cp-schema-registry:7.1.0"
     hostname: schema-registry
     ports:
       - 8081:8081
-    networks:
-      - peace-project-net
-    restart: on-failure
+    depends_on:
+      kafka:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://schema-registry:8081/
+      interval: 5s
+      timeout: 30s
+      retries: 5
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
       SCHEMA_REGISTRY_LISTENERS: http://schema-registry:8081
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
 
   minio:
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2022-06-07T00-33-41Z.fips
+    volumes:
+      - ./data:/data
+    hostname: minio
     ports:
         - 9000:9000
         - 9001:9001
-    networks:
-      - peace-project-net
     command: server /data --console-address ":9001"
+    healthcheck:
+      test: curl http://minio:9000
+      interval: 3s
+      timeout: 30s
+      retries: 5
     environment:
         MINIO_ROOT_USER: minioadmin
         MINIO_ROOT_PASSWORD: minioadmin
 
-  create-buckets:
-      image: minio/mc
-      depends_on:
-          - minio
-      networks:
-      - peace-project-net
-      entrypoint: >
-          /bin/sh -c -e "
-          until (/usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin) do echo '...waiting...' && sleep 1; done;
-          /usr/bin/mc mb -p myminio/kafka-bucket;
-          /usr/bin/mc policy set public myminio/kafka-bucket;
-          "
-
   kafka-connect:
     image: srvc_connect
     build: srvc_connect
-    depends_on:
-      - schema-registry
-      - create-buckets
     ports:
       - 8083:8083
-    networks:
-      - peace-project-net
+    depends_on:
+      minio:
+        condition: service_started
+      schema-registry:
+        condition: service_healthy
+    healthcheck:
+      test: curl --fail http://srvc_connect:8083/connectors
+      interval: 3s
+      timeout: 30s
+      retries: 5
     environment:
       CONNECT_REST_PORT: 8083
       CONNECT_GROUP_ID: srvc_connect
@@ -98,41 +108,45 @@ services:
 
       CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
 
+  init-kafka-connector:
+    image: minio/mc:RELEASE.2022-05-09T04-08-26Z
+    volumes:
+      - './srvc_connect:/srvc_connect'
+    depends_on:
+      kafka-connect:
+        condition: service_started
+    restart: on-failure
+    entrypoint: sh /srvc_connect/init-connector.sh
+
   srvc_drone:
     image: srvc_drone
     build: .
-    depends_on:
-      - schema-registry
-      - kafka-connect
-    networks:
-      - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_drone" run
+    depends_on:
+      schema-registry:
+        condition: service_healthy
 
   srvc_analysis:
     image: srvc_analysis
     build: .
-    depends_on:
-      - srvc_drone
-    networks:
-      - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_analysis" run
+    depends_on:
+      init-kafka-connector:
+        condition: service_started
+      schema-registry:
+        condition: service_healthy
 
   srvc_alert:
     image: srvc_alert
     build: .
-    depends_on:
-      - srvc_drone
-    networks:
-      - peace-project-net
     command: /ops/sbt/bin/sbt "project srvc_alert" run
+    depends_on:
+      srvc_back:
+        condition: service_started
 
   srvc_back:
     image: srvc_back
     build: .
     ports:
       - 8080:8080
-    networks:
-      - peace-project-net
-    command: /opt/sbt/bin/sbt "project srvc_back" run
-networks:
-  peace-project-net:
+    command: /ops/sbt/bin/sbt "project srvc_back" run
