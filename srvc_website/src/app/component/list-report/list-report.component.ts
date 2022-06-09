@@ -25,6 +25,7 @@ export class ListReportComponent implements OnInit {
   }
 
   refresh_list() {
+    //this.reports.push(new Report(7,["March","Jean","Jeremy","Paul"],90.85,1.29));
     console.log("Refreshing list");
   }
 

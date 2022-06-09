@@ -1,25 +1,31 @@
-section{
-	background-color: #607D8B;
-	width: 300px;
-	position: absolute;
-	height: 100px;
-}
-article{
-	width: 300px;
-	background-color: #607d8b70;
-	position: absolute;
-	top: 219px;
-	height: 100px;
-}
-aside{
-	background-color: #607d8b99;
-	width: 300px;
-	position: absolute;
-	left: 308px;
-
-	height: 200px;
-}
 h2 , p {
 	text-align: center;
 	color: red;
+}
+
+.drone-report
+{
+	width: 600px;
+	height: 300px;
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	grid-template-areas: "alert datas"
+						"localisation datas";
+}
+
+.alert
+{
+	grid-area: alert;
+	background-color: #607D8B;
+}
+.localisation
+{
+	grid-area: localisation;
+	background-color: #607d8b70;
+}
+.datas
+{
+	grid-area: datas;
+	background-color: #607d8b99;
 }
