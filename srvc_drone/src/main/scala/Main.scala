@@ -40,7 +40,7 @@ object Main extends App {
         AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://schema-registry:8081"
     )
 
-    val producer = new KafkaProducer[Int, GenericRecord](props.asJava)
+    val producer = new KafkaProducer[Null, GenericRecord](props.asJava)
 
     val citizenNames = List(
         "Adrien", "Alain", "Alexandre", "Timothée", "Victor",
@@ -67,7 +67,7 @@ object Main extends App {
     }
 
     (1 to NB_DRONES).foreach { droneId =>
-        (1 to Random.nextInt(MAX_REPORTS_PER_DRONE)).foreach { reportId =>
+        (1 to Random.nextInt(MAX_REPORTS_PER_DRONE)).foreach {
             // Select random number of words and citizens
             val selectedWords = selectRandomElements(dictionary, List(), Random.nextInt(MAX_WORDS_PER_REPORT))
             val selectedCitizens = selectRandomElements(citizenNames, List(), Random.nextInt(MAX_CITIZENS_PER_REPORT)).map {
@@ -89,7 +89,7 @@ object Main extends App {
             droneReport.put("words", words)
             droneReport.put("citizens", citizens)
 
-            val record = new ProducerRecord[Int, GenericRecord](TOPIC_NAME, reportId, droneReport)
+            val record = new ProducerRecord[Null, GenericRecord](TOPIC_NAME, null, droneReport)
             producer.send(record)
         }
     }
