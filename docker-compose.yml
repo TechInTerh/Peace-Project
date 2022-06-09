@@ -147,6 +147,7 @@ services:
   srvc_back:
     image: srvc_back
     build: .
+    hostname: srvc_back
     ports:
       - 8080:8080
     command: /ops/sbt/bin/sbt "project srvc_back" run

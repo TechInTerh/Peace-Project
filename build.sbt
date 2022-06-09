@@ -10,7 +10,7 @@ lazy val commonSettings = Seq(
   scalacOptions += "-feature"
 )
 
-lazy val root = (project in file(".")).aggregate(srvc_drone, srvc_analysis, srvc_alert)
+lazy val root = (project in file(".")).aggregate(srvc_drone, srvc_analysis, srvc_alert, srvc_back)
 
 lazy val srvc_drone = (project in file("srvc_drone"))
   .settings(commonSettings)

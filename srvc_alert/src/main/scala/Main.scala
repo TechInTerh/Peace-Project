@@ -13,7 +13,7 @@ import scala.annotation.tailrec
 object Main extends App {
     def send(value: String): Unit = {
         val backend = HttpURLConnectionBackend()
-        basicRequest.post(uri"http://localhost:8080/alert")
+        basicRequest.post(uri"http://srvc_back:8080/alert")
                     .body(value)
                     .send(backend)
                     .code
@@ -21,7 +21,7 @@ object Main extends App {
 
     val props = new Properties();
     props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-pipe");
-    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
     props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
     props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
