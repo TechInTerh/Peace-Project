@@ -5,7 +5,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
 import org.apache.hadoop.fs.{FileSystem, Path}
 
-import registry.SchemaRegistry._
+//import registry.SchemaRegistry._
 
 object Main extends App {
   def add_File(sc: SparkContext, file_path: String, file_name: String): Unit = {
