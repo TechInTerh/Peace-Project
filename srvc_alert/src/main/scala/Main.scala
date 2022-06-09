@@ -11,14 +11,14 @@ import sttp.client3.{HttpURLConnectionBackend, _}
 import scala.annotation.tailrec
 
 object Main extends App {
-  def send(value: String): Unit = {
+    def send(value: String): Unit = {
         val backend = HttpURLConnectionBackend()
-        basicRequest
-                .post(uri"http://localhost:8080/alert")
-                .body(value)
-                .send(backend)
-                .code
-  }
+        basicRequest.post(uri"http://localhost:8080/alert")
+                    .body(value)
+                    .send(backend)
+                    .code
+    }
+
     val props = new Properties();
     props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-pipe");
     props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
@@ -26,27 +26,28 @@ object Main extends App {
     props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
     val builder = new StreamsBuilder();
-    val source = builder
-                    .stream("drone-report")
+    val source = builder.stream("drone-report")
 
     source.foreach(new ForeachAction[String, String]() {
-      override def apply(key: String, value: String) : Unit = {
-        send(value)
-      }
+        override def apply(key: String, value: String) : Unit = {
+          send(value)
+        }
     })
+
     val topology = builder.build();
 
-     val streams = new KafkaStreams(topology, props)
+    val streams = new KafkaStreams(topology, props)
 
-  streams.start()
+    streams.start()
 
-  Runtime.getRuntime.addShutdownHook(new Thread(() => {
-  streams.close()
-}))
+    Runtime.getRuntime.addShutdownHook(new Thread(() => {
+        streams.close()
+    }))
 
-  @tailrec
-  def run(): Unit = {
+    @tailrec
+    def run(): Unit = {
+      run();
+    }
+
     run();
-  }
-  run();
 }
