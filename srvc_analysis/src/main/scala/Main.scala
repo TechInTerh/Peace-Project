@@ -7,7 +7,6 @@ import org.apache.hadoop.fs.{FileSystem, Path}
 
 import registry.SchemaRegistry._
 
-
 object Main extends App {
   def add_File(sc: SparkContext, file_path: String, file_name: String): Unit = {
     println("Adding file: " + file_path)
