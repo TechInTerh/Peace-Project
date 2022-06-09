@@ -39,6 +39,7 @@ object Dependencies {
 		// analysis
 		val sparkCore = "org.apache.spark" %% "spark-core" % V.spark
 		val sparkSql = "org.apache.spark" %% "spark-sql" % V.spark
+		val sparkAvro = "org.apache.spark" %% "spark-avro" % V.spark
 
 		val hadoopClient = "org.apache.hadoop" % "hadoop-client" % V.hadoop
 		val hadoopCommon = "org.apache.hadoop" % "hadoop-aws" % V.hadoop
@@ -46,5 +47,6 @@ object Dependencies {
 		val amazonAws = "com.amazonaws" % "aws-java-sdk-core" % V.amazonAws
 		val amazonAwsS3 = "com.amazonaws" % "aws-java-sdk-s3" % V.amazonAws
 		val amazonAxsKms = "com.amazonaws" % "aws-java-sdk-kms" % V.amazonAws
+
 	}
 }
