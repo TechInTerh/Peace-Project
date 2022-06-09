@@ -10,12 +10,16 @@ object Dependencies {
 		val circe = "0.14.1"
 		val cats = "3.2.5"
 		val smlCommon = "2.3.1"
+
+		val http4sVersion = "0.23.12"
+		val circeVersion = "0.14.2"
+		val logbackVersion = "1.2.10"
+
 		val spark = "3.2.0"
 		val hadoop = "3.3.1"
 		val amazonAws = "1.11.234"
 		val joda = "2.9.9"
 		val httpComponent = "4.5.3"
-
 	}
 
 	object Libs {
@@ -36,6 +40,11 @@ object Dependencies {
 
 		val smlTagging = "com.softwaremill.common" %% "tagging" % V.smlCommon
 
+		val http4sEmberServer = "org.http4s" %% "http4s-ember-server" % V.http4sVersion
+		val http4sEmberClient = "org.http4s" %% "http4s-ember-client" % V.http4sVersion
+		val https4sCirce = "org.http4s" %% "http4s-circe" % V.http4sVersion
+		val http4Sdsl = "org.http4s" %% "http4s-dsl" % V.http4sVersion
+		val logback = "ch.qos.logback" % "logback-classic" % V.logbackVersion % Runtime
 		// analysis
 		val sparkCore = "org.apache.spark" %% "spark-core" % V.spark
 		val sparkSql = "org.apache.spark" %% "spark-sql" % V.spark
@@ -50,3 +59,4 @@ object Dependencies {
 
 	}
 }
+

@@ -4,3 +4,9 @@
 .bsp/
 project
 target/
+.bloop/
+.metals/
+metals.sbt
+.vscode/
+.bsp
+data/

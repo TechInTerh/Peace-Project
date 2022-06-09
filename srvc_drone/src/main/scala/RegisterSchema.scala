@@ -4,6 +4,7 @@ import model.DroneReportModel._
 
 import com.softwaremill.tagging._
 import com.sksamuel.avro4s.{AvroSchema, RecordFormat}
+import scala.language.higherKinds
 import io.circe.generic.auto._
 import org.apache.avro.Schema
 import sttp.client3.circe._
