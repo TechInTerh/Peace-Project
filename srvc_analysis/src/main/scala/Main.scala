@@ -28,7 +28,7 @@ object Main extends App {
 	//spark.read.option("header", "true").csv("s3a://spark-test/test.csv").show()
 	//spark.read.option("header", "true").csv("s3a://spark-test/*.csv").show()
 
-	val avrotest = spark.read.format("avro").load("s3a://spark-test/drone-report00000000000.avro")
+	val avrotest = spark.read.format("avro").load("s3a://kafka-bucket/topics/drone-report/partition=0/*.avro")
 	avrotest.show()
 	//avrotest.show()
 	//spark.read.format("avro").load("s3a://spark-test/drone-report00000000000.avro").show()
