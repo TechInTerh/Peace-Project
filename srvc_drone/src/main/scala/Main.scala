@@ -4,6 +4,7 @@ import registry.SchemaRegistry._
 import com.sksamuel.avro4s.AvroSchema
 import scala.language.higherKinds
 import io.confluent.kafka.serializers.{ AbstractKafkaAvroSerDeConfig, KafkaAvroSerializer }
+import java.time._
 import java.util.Properties
 import org.apache.avro.{ Schema }
 import org.apache.avro.generic.{ GenericData, GenericRecordBuilder, GenericRecord }
@@ -24,6 +25,7 @@ object Main extends App {
     val MAX_LATITUDE = 200.0
     val MAX_CITIZENS_PER_REPORT = 3
     val MAX_WORDS_PER_REPORT = 3
+    val NB_SECONDS = 60
 
     // Schema initialization
     println("Start registering AVRO schemas ...")
@@ -80,14 +82,20 @@ object Main extends App {
             val words = new GenericData.Array[String](Schema.createArray(AvroSchema[String]), selectedWords.asJava);
             val citizens = new GenericData.Array[GenericData.Record](Schema.createArray(AvroSchema[Citizen]), selectedCitizens.asJava);
 
-            // Create a record and fill it with random data
-            val droneReport = new GenericData.Record(droneReportSchema)
-            droneReport.put("droneId", droneId)
-            droneReport.put("latitude", Random.nextDouble() * MAX_LATITUDE)
-            droneReport.put("longitude", Random.nextDouble() * MAX_LONGITUDE)
-            droneReport.put("timestamp", System.currentTimeMillis())
-            droneReport.put("words", words)
-            droneReport.put("citizens", citizens)
+            // Get the report timestamp
+            val timestamp = LocalDateTime.now.plusMinutes(5 * reportId)
+                                             .plusSeconds(Random.nextInt(NB_SECONDS))
+                                             .toEpochSecond(ZoneOffset.of("+01:00"))
+
+            // Create a record and fill it with our random datas
+            val droneReport = new GenericRecordBuilder(droneReportSchema)
+                                .set("droneId", droneId)
+                                .set("latitude", Random.nextDouble() * MAX_LATITUDE)
+                                .set("longitude", Random.nextDouble() * MAX_LONGITUDE)
+                                .set("timestamp", timestamp)
+                                .set("words", words)
+                                .set("citizens", citizens)
+                                .build()
 
             producer.send(new ProducerRecord[Null, GenericRecord](TOPIC_NAME, null, droneReport))
         }
