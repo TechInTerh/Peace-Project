@@ -13,11 +13,11 @@ object Main extends App {
 
 	def mean(xs: Iterable[Int]) = xs.sum / xs.size
 
-	val directory1 = new Directory(new File("/messagesPerHour"))
+	val directory1 = new Directory(new File("messagesPerHour"))
 	directory1.deleteRecursively()
-	val directory2 = new Directory(new File("/messagesPerDrone"))
+	val directory2 = new Directory(new File("messagesPerDrone"))
 	directory2.deleteRecursively()
-	val directory3 = new Directory(new File("/scorePerDrone"))
+	val directory3 = new Directory(new File("scorePerDrone"))
 	directory3.deleteRecursively()
 
 	val spark = SparkSession.builder().appName("Peace-Analyzer")
