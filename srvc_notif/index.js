@@ -2,6 +2,8 @@ var express = require('express');
 var mysql = require('mysql');
 
 var app = express(express.json());
+const cors = require('cors');
+app.use(cors());
 
 var con = mysql.createConnection({
   host: "sql-alerts",
@@ -44,5 +46,4 @@ app.get('/alerts', function(req, res){
         res.send(result)
     });
 });
-
 app.listen(8080);

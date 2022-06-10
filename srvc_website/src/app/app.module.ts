@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DroneReportComponent } from './component/drone-report/drone-report.component';
 import { ListReportComponent } from './component/list-report/list-report.component';
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { ListReportComponent } from './component/list-report/list-report.compone
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+      HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

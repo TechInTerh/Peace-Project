@@ -1,14 +1,15 @@
 export class Report {
-	constructor(id:number, names: string[],lattitude: number, longitude: number) {
-		this.id = id;
+	constructor(names: string[], lattitude: number, longitude: number) {
 		this.names = names;
 		this.lattitude = lattitude;
 		this.longitude = longitude;
 
 	}
-	id:number;
 	names: string[];
 	lattitude: number;
 	longitude: number;
+	static fromJson(json: any): Report {
+		return new Report(json.name, json.la, json.lon);
+	}
 
 }
