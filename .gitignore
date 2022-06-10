@@ -7,3 +7,6 @@ metals.sbt
 .vscode/
 .bsp
 data/
+node_modules
+*.swp
+package-lock.json
