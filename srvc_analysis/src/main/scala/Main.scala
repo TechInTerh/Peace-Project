@@ -6,8 +6,6 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 import org.apache.hadoop.fs.{FileSystem, Path}
 
-//import registry.SchemaRegistry._
-
 object Main extends App {
 	def add_File(sc: SparkContext, file_path: String, file_name: String): Unit = {
 		println("Adding file: " + file_path)
@@ -25,9 +23,6 @@ object Main extends App {
 		.config("fs.s3a.multipart.size", "10485760")
 		.config("fs.s3a.fast.upload", "true")
 		.getOrCreate()
-
-	//spark.read.option("header", "true").csv("s3a://spark-test/test.csv").show()
-	//spark.read.option("header", "true").csv("s3a://spark-test/*.csv").show()
 
 	val avrotest = spark.read.format("avro").load("s3a://kafka-bucket/topics/drone-report/partition=0/*.avro")
 	avrotest.show()
@@ -49,9 +44,4 @@ object Main extends App {
 
 	//Et maintenant je vais me faire chier à récupérer le Peacescore
 	avrotest.withColumn("partofpeacescore", col("citizens").getItem(0)).printSchema()
-
-	//avrotest
-
-	//avrotest.show()
-	//spark.read.format("avro").load("s3a://spark-test/drone-report00000000000.avro").show()
 }
