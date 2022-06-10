@@ -28,6 +28,15 @@ object Main extends App {
                     .code
     }
 
+    def postAlert(name: String, lat: String, lon: String): Unit = {
+        val value: String = "{\"name\": \"" + name + "\", \"lat\": " + lat + ", \"lon\": " + lon +"}"
+        val backend = HttpURLConnectionBackend()
+        basicRequest.post(uri"http://srvc_back:8080/alert")
+                    .header("Content-Type", "application/json")
+                    .body(value)
+                    .send(backend)
+                    .code
+    }
     val props = new Properties()
     props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-pipe3")
     props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092")
@@ -57,10 +66,14 @@ object Main extends App {
     }
     val SCORE_TRESHOLD = 50
     source.peek((k,v)=>println(v.toString()))
-    val ks1 = source.flatMapValues(x=>citizensToSeq(x.get("citizens")))
+    val ks1 = source.flatMapValues(x=>citizensToSeq(x.get("citizens"))
+      .map(c=>(c,
+                                      x.get("latitude"),
+                                      x.get("longitude"))))
     ks1.peek((k,v)=>println(v.toString()))
-    val ks2 = ks1.filter((k,v)=>v.get("peaceScore").asInstanceOf[Integer] > SCORE_TRESHOLD)
-    .foreach((k,v)=>send(v.get("peaceScore").asInstanceOf[Integer].toString()))
+    val ks2 = ks1.filter((k,v)=>v._1.get("peaceScore").asInstanceOf[Integer] > SCORE_TRESHOLD)
+    //.foreach((k,v)=>send(v.get("peaceScore").asInstanceOf[Integer].toString()))
+    .foreach((k,v)=>postAlert(v._1.get("name").toString(),v._2.toString(),v._3.toString()))
 
     val topology = builder.build()
     println(topology.describe())
