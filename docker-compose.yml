@@ -7,7 +7,7 @@ services:
     ports:
       - "2181:2181"
     healthcheck:
-      test: nc -vz localhost 2181
+      test: nc -vz zookeeper 2181
       interval: 5s
       timeout: 30s
       retries: 5
@@ -23,7 +23,7 @@ services:
       zookeeper:
         condition: service_healthy
     healthcheck:
-      test: nc -vz localhost 9092
+      test: nc -vz kafka 9092
       interval: 5s
       timeout: 30s
       retries: 5
@@ -141,7 +141,7 @@ services:
     build: .
     command: /ops/sbt/bin/sbt "project srvc_alert" run
     depends_on:
-      srvc_back:
+      srvc_notif:
         condition: service_started
 
   srvc_notif:
@@ -152,15 +152,29 @@ services:
       - 8080:8080
     depends_on:
         sql-alerts:
-            condition: service_started
+            condition: service_healthy
 
   sql-alerts:
-      image: 
+      image:
         mysql:5
       hostname: sql-alerts
       ports:
         - 3306:3306
         - 33060:33060
+      healthcheck:
+        test: /usr/bin/mysql --user=root --password=sqladmin --execute "SHOW DATABASES;"
+        interval: 2s
+        timeout: 20s
+        retries: 10
       environment:
           MYSQL_ROOT_PASSWORD: sqladmin
           MYSQL_DATABASE: alerts
+
+  srvc_website:
+    image: srvc_website
+    build: srvc_website
+    ports:
+      - 4200:80
+    depends_on:
+      srvc_alert:
+        condition: service_started
