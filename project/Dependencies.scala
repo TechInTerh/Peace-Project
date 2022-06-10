@@ -51,4 +51,3 @@ object Dependencies {
     val amazonAxsKms = "com.amazonaws" % "aws-java-sdk-kms" % V.amazonAws
   }
 }
-
