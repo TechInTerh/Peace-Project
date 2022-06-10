@@ -144,10 +144,23 @@ services:
       srvc_back:
         condition: service_started
 
-  srvc_back:
-    image: srvc_back
-    build: .
-    hostname: srvc_back
+  srvc_notif:
+    image: srvc_notif
+    build: srvc_notif
+    hostname: srvc_notif
     ports:
       - 8080:8080
-    command: /ops/sbt/bin/sbt "project srvc_back" run
+    depends_on:
+        sql-alerts:
+            condition: service_started
+
+  sql-alerts:
+      image: 
+        mysql:5
+      hostname: sql-alerts
+      ports:
+        - 3306:3306
+        - 33060:33060
+      environment:
+          MYSQL_ROOT_PASSWORD: sqladmin
+          MYSQL_DATABASE: alerts

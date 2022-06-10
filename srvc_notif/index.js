@@ -4,7 +4,7 @@ var mysql = require('mysql');
 var app = express(express.json());
 
 var con = mysql.createConnection({
-  host: "localhost",
+  host: "sql-alerts",
   user: "root",
   password: "sqladmin",
   database: "alerts"
