@@ -27,21 +27,24 @@ export class ListReportComponent implements OnInit {
 	refresh_list() {
 
 		if (this.reports.length < 2) {
-			this.reports.push(new Report(7, ["March", "Jean", "Jeremy", "Paul"], 90.85, 1.29));
+			this.reports.push(new Report(["March", "Jean", "Jeremy", "Paul"], 90.85, 1.29));
 		}
-	}
-
-	ngOnInit(): void {
-		//create empty string list named list
-		let list: string[] = [];
-
 		const post = this.backendService.sendReportRequest();
+		//clea reports
+		this.reports = [];
 		post.subscribe(
 			(data: any) => {
-				console.log(data)
+				data.forEach( (element: Object) => {
+					this.reports.push(Report.fromJson(element));
+					console.log(element);
+				})
 			}
 		);
 		console.log("Refreshing list");
+	}
+
+	ngOnInit(): void {
+
 	}
 
 }
