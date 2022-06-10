@@ -7,10 +7,18 @@ import org.apache.spark.sql.functions._
 import org.apache.hadoop.fs.{FileSystem, Path}
 
 import java.io.{BufferedWriter, File, FileWriter}
+import scala.reflect.io.Directory
 
 object Main extends App {
 
 	def mean(xs: Iterable[Int]) = xs.sum / xs.size
+
+	val directory1 = new Directory(new File("/messagesPerHour"))
+	directory1.deleteRecursively()
+	val directory2 = new Directory(new File("/messagesPerDrone"))
+	directory2.deleteRecursively()
+	val directory3 = new Directory(new File("/scorePerDrone"))
+	directory3.deleteRecursively()
 
 	val spark = SparkSession.builder().appName("Peace-Analyzer")
 		.master("local[4]")
@@ -68,6 +76,4 @@ object Main extends App {
 	bufferWriter.write("4) To see the mean of peacescores retrieved by each drone, see directory messagesPerDrone, which contains a csv file detailed")
 	bufferWriter.newLine()
 	bufferWriter.close()
-
-	while (true) { }
 }
