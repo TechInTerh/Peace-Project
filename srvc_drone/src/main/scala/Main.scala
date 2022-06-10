@@ -35,14 +35,13 @@ object Main extends App {
     println(s"Start producing records on $TOPIC_NAME ...")
 
     // Instantiate a producer with proper parameters
-    val props: Map[String, Object] = Map(
-        ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "kafka:9092",
-        ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG -> classOf[KafkaAvroSerializer],
-        ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG -> classOf[KafkaAvroSerializer],
-        AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://schema-registry:8081"
-    )
+    val props = new Properties();
+    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
+    props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer]);
+    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer]);
+    props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://schema-registry:8081");
 
-    val producer = new KafkaProducer[Null, GenericRecord](props.asJava)
+    val producer = new KafkaProducer[Null, GenericRecord](props)
 
     val citizenNames = List(
         "Adrien", "Alain", "Alexandre", "Timothée", "Victor",
