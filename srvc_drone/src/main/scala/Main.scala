@@ -42,7 +42,7 @@ object Main extends App {
     props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer]);
     props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://schema-registry:8081");
 
-    val producer = new KafkaProducer[Null, GenericRecord](props)
+    val producer = new KafkaProducer[GenericRecord](props)
 
     val citizenNames = List(
         "Adrien", "Alain", "Alexandre", "Timothée", "Victor",
@@ -96,7 +96,7 @@ object Main extends App {
                                 .set("words", words)
                                 .set("citizens", citizens)
                                 .build()
-            producer.send(new ProducerRecord[Null, GenericRecord](TOPIC_NAME, null, droneReport))
+            producer.send(new ProducerRecord[GenericRecord](TOPIC_NAME, droneReport))
         }
     }
 
