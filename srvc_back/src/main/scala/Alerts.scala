@@ -1,4 +1,4 @@
-package com.example.srvc_back
+package srvc_back
 
 import cats.effect.Concurrent
 import cats.implicits._

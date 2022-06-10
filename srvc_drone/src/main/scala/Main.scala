@@ -4,6 +4,7 @@ import registry.SchemaRegistry._
 import com.sksamuel.avro4s.AvroSchema
 import scala.language.higherKinds
 import io.confluent.kafka.serializers.{ AbstractKafkaAvroSerDeConfig, KafkaAvroSerializer }
+import java.time._
 import java.util.Properties
 import org.apache.avro.{ Schema }
 import org.apache.avro.generic.{ GenericData, GenericRecordBuilder, GenericRecord }
@@ -12,6 +13,7 @@ import scala.util.Random
 import scala.annotation.tailrec
 import scala.jdk.CollectionConverters._
 import scala.util.{ Failure, Success }
+import scala.jdk.javaapi.CollectionConverters
 
 object Main extends App {
 
@@ -24,6 +26,7 @@ object Main extends App {
     val MAX_LATITUDE = 200.0
     val MAX_CITIZENS_PER_REPORT = 3
     val MAX_WORDS_PER_REPORT = 3
+    val NB_SECONDS = 60
 
     // Schema initialization
     println("Start registering AVRO schemas ...")
@@ -33,14 +36,13 @@ object Main extends App {
     println(s"Start producing records on $TOPIC_NAME ...")
 
     // Instantiate a producer with proper parameters
-    val props: Map[String, Object] = Map(
-        ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> "kafka:9092",
-        ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG -> classOf[KafkaAvroSerializer],
-        ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG -> classOf[KafkaAvroSerializer],
-        AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> "http://schema-registry:8081"
-    )
+    val props = new Properties();
+    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
+    props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer]);
+    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer]);
+    props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://schema-registry:8081");
 
-    val producer = new KafkaProducer[Int, GenericRecord](props.asJava)
+    val producer = new KafkaProducer[Null, GenericRecord](props)
 
     val citizenNames = List(
         "Adrien", "Alain", "Alexandre", "Timothée", "Victor",
@@ -80,17 +82,33 @@ object Main extends App {
             val words = new GenericData.Array[String](Schema.createArray(AvroSchema[String]), selectedWords.asJava);
             val citizens = new GenericData.Array[GenericData.Record](Schema.createArray(AvroSchema[Citizen]), selectedCitizens.asJava);
 
-            // Create a record and fill it with random data
-            val droneReport = new GenericData.Record(droneReportSchema)
-            droneReport.put("droneId", droneId)
-            droneReport.put("latitude", Random.nextDouble() * MAX_LATITUDE)
-            droneReport.put("longitude", Random.nextDouble() * MAX_LONGITUDE)
-            droneReport.put("timestamp", System.currentTimeMillis())
-            droneReport.put("words", words)
-            droneReport.put("citizens", citizens)
+            // Get the report timestamp
+            val timestamp = LocalDateTime.now.plusMinutes(5 * reportId)
+                                             .plusSeconds(Random.nextInt(NB_SECONDS))
+                                             .toEpochSecond(ZoneOffset.of("+01:00"))
 
-            val record = new ProducerRecord[Int, GenericRecord](TOPIC_NAME, reportId, droneReport)
-            producer.send(record)
+            // Create a record and fill it with our random datas
+            val droneReport = new GenericRecordBuilder(droneReportSchema)
+                                .set("droneId", droneId)
+                                .set("latitude", Random.nextDouble() * MAX_LATITUDE)
+                                .set("longitude", Random.nextDouble() * MAX_LONGITUDE)
+                                .set("timestamp", timestamp)
+                                .set("words", words)
+                                .set("citizens", citizens)
+                                .build()
+
+            val test = droneReport.get("citizens")
+            def citizensToSeq(citizens: Object) = {
+              val array = citizens.asInstanceOf[GenericData.Array[GenericData.Record]]
+              CollectionConverters
+                  .asScala(array.iterator()).toSeq
+            }
+            val test2 = citizensToSeq(test)
+
+    val ks2 = test2.filter(v=>v.get("peaceScore").asInstanceOf[Integer] > 50)
+    ks2.foreach(v=>println(v.get("name").toString()))
+
+            producer.send(new ProducerRecord[Null, GenericRecord](TOPIC_NAME, null, droneReport))
         }
     }
 
