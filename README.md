@@ -10,7 +10,7 @@ Peacemakers are formed to make quick interventions in order to help anyone that 
 
 For this they need drones named peacewatchers in order to detect as soon as possible the lowest peacescores, and to make the nearest peacewatchers squad intervene to avoid this agitated citizen to propagate this negativity towards their neighbours.
 
-This is why they called for help 4 student of EPITA : Establishment of Peace and Individuality Totally Autonomous. These students must build an architecture answering these needs. To help them detect the low peacescores, Peaceland gives them peacewatchers sending them reports from all the country.
+This is why they called for help 4 student of EPITA : Establishment of Peace and Individuality Totally Autonomous. These students must build an architecture answering these needs. To help them detect the low peacescores, Peaceland gives them access to peacewatchers sending them reports from all the country.
 
 This Project shows the architecture of the solution imagined by the students, as well as the full code written in Scala and Spark, and running with Docker. It is made by :
 
@@ -23,11 +23,11 @@ This Project shows the architecture of the solution imagined by the students, as
 
 This directory contains multiple subprojects, each being linked to some specific services.
 
-- `srvc_alert`: Consume data from kafka topics to send alerts to peacewatchers.
-- `srvc_analysis`: Consume data from kafka topics to analyze them with Spark.
+- `srvc_alert`: Consumes data from kafka topics to send alerts to peacewatchers.
+- `srvc_analysis`: Consumes data from our minio bucket to analyze them with Spark.
 - `srvc_connect`: Directory containing dockerfile and associated elements to run the schema-registry and init minio.
-- `srvc_drone`: produces drone random data to the specified kafka topic.
-- `srvc_notif`: stock alerts to send them to the front at the appropriate time.
+- `srvc_drone`: Produces random drone data to the specified kafka topic.
+- `srvc_notif`: Stock alerts to send them to the front at the appropriate time.
 - `srvc_website`: Diplay alerts on a custom website.
 
 ## Installation
