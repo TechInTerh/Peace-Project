@@ -11,6 +11,8 @@ object Dependencies {
     val kafka = "2.8.0"
     val kafkaAvro = "6.2.0"
     val logbackVersion = "1.2.10"
+	val sttp3 = "3.3.11"
+	val smlCommon = "2.3.1"
 
     val spark = "3.2.0"
     val hadoop = "3.3.1"
