@@ -6,6 +6,12 @@ target/
 metals.sbt
 .vscode/
 .bsp
+
+data/
+node_modules
+*.swp
+package-lock.json
+
 # compiled output
 dist
 tmp
@@ -53,4 +59,4 @@ Thumbs.db
 
 confluent-plugins/
 plugins/
-data/
+
