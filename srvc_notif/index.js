@@ -10,7 +10,7 @@ app.use(bodyParser.json())
 var urlParser = bodyParser.urlencoded({extended : false})
 
 var con = mysql.createConnection({
-  host: "localhost",
+  host: "sql-alerts",
   user: "root",
   password: "sqladmin",
   database: "alerts"
