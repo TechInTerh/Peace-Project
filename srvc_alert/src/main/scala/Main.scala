@@ -11,9 +11,9 @@ import org.apache.kafka.streams.kstream.ForeachAction
 import org.apache.kafka.streams.kstream.Printed
 import org.apache.kafka.streams.processor.Processor
 import org.apache.kafka.streams.scala.ImplicitConversions._
-import org.apache.kafka.streams.scala.Serdes._
 import org.apache.kafka.streams.scala.StreamsBuilder
 import org.apache.kafka.streams.scala.kstream.Consumed._
+import org.apache.kafka.streams.scala.serialization.Serdes._
 import scala.annotation.tailrec
 import sttp.client3.{HttpURLConnectionBackend, _}
 
