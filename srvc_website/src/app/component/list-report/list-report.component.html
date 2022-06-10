@@ -1,0 +1,12 @@
+<div class="list-reports">
+	<igx-list>
+		<igx-list-item [isHeader]="true">
+			<h3>Alertes</h3>
+		</igx-list-item>
+		<igx-list-item *ngFor="let el of reports" igxRipple igxRippleTarget=".igx-list__item-content">
+			<span class="citizens" igxListLineTitle>Citizens: {{el.names}}</span>
+			<span class="latitude" igxListLineSubTitle>Latitude: {{el.lattitude}}</span>
+			<span class="longitude" igxListLineSubTitle>Longitude: {{el.longitude}}</span>
+		</igx-list-item>
+	</igx-list>
+</div>

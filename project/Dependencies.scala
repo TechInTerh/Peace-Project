@@ -3,16 +3,13 @@ import sbt._
 object Dependencies {
 
   object V {
+    val avro4s = "4.0.10"
+    val cats = "3.2.5"
+    val circe = "0.14.1"
+    val circeVersion = "0.14.2"
+    val http4sVersion = "0.23.12"
     val kafka = "2.8.0"
     val kafkaAvro = "6.2.0"
-    val avro4s = "4.0.10"
-    val sttp3 = "3.3.11"
-    val circe = "0.14.1"
-    val cats = "3.2.5"
-    val smlCommon = "2.3.1"
-
-    val http4sVersion = "0.23.12"
-    val circeVersion = "0.14.2"
     val logbackVersion = "1.2.10"
 
     val spark = "3.2.0"
@@ -40,6 +37,7 @@ object Dependencies {
     val https4sCirce = "org.http4s" %% "http4s-circe" % V.http4sVersion
     val http4Sdsl = "org.http4s" %% "http4s-dsl" % V.http4sVersion
     val logback = "ch.qos.logback" % "logback-classic" % V.logbackVersion % Runtime
+
     // analysis
     val sparkCore = "org.apache.spark" %% "spark-core" % V.spark
     val sparkSql = "org.apache.spark" %% "spark-sql" % V.spark
@@ -49,5 +47,7 @@ object Dependencies {
     val amazonAws = "com.amazonaws" % "aws-java-sdk-core" % V.amazonAws
     val amazonAwsS3 = "com.amazonaws" % "aws-java-sdk-s3" % V.amazonAws
     val amazonAxsKms = "com.amazonaws" % "aws-java-sdk-kms" % V.amazonAws
+    val smlCommon = "2.3.1"
+    val sttp3 = "3.3.11"
   }
 }
