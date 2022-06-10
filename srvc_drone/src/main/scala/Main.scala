@@ -13,6 +13,7 @@ import scala.util.Random
 import scala.annotation.tailrec
 import scala.jdk.CollectionConverters._
 import scala.util.{ Failure, Success }
+import scala.jdk.javaapi.CollectionConverters
 
 object Main extends App {
 
@@ -95,6 +96,17 @@ object Main extends App {
                                 .set("words", words)
                                 .set("citizens", citizens)
                                 .build()
+
+            val test = droneReport.get("citizens")
+            def citizensToSeq(citizens: Object) = {
+              val array = citizens.asInstanceOf[GenericData.Array[GenericData.Record]]
+              CollectionConverters
+                  .asScala(array.iterator()).toSeq
+            }
+            val test2 = citizensToSeq(test)
+
+    val ks2 = test2.filter(v=>v.get("peaceScore").asInstanceOf[Integer] > 50)
+    ks2.foreach(v=>println(v.get("name").toString()))
 
             producer.send(new ProducerRecord[Null, GenericRecord](TOPIC_NAME, null, droneReport))
         }
