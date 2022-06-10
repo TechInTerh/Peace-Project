@@ -69,10 +69,10 @@ object Main extends App {
       .map(c => (c, x.get("latitude"), x.get("longitude"))))
 
     ks1.peek((k, v) => println(v.toString()))
-    val ks2 = ks1.filter((k, v) => v._1.get("peaceScore").asInstanceOf[Integer] > SCORE_TRESHOLD)
-                 .foreach((k, v) => postAlert(v._1.get("name").toString(),
-                                              v._2.toString(),
-                                              v._3.toString()))
+    // val ks2 = ks1.filter((k, v) => v._1.get("peaceScore").asInstanceOf[Integer] > SCORE_TRESHOLD)
+    //              .foreach((k, v) => postAlert(v._1.get("name").toString(),
+    //                                           v._2.toString(),
+    //                                           v._3.toString()))
 
     val topology = builder.build()
     println(topology.describe())
