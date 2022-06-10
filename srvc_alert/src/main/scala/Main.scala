@@ -34,7 +34,7 @@ object Main extends App {
                             ", \"lon\": " + lon +"}"
 
         val backend = HttpURLConnectionBackend()
-        basicRequest.post(uri"http://srvc_back:8080/alert")
+        basicRequest.post(uri"http://srvc_notif:8080/alert")
                     .header("Content-Type", "application/json")
                     .body(value)
                     .send(backend)
