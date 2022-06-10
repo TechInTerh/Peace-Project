@@ -1,34 +1,5 @@
-h2 ,h3,h4, p{
-	text-align: center;
-	color: red;
-}
-
-.li{
-
-}
-.drone-report
-{
-	width: 600px;
-	height: 200px;
-	display: grid;
-	grid-template-columns: 2fr 1fr;
-	grid-template-rows: 1fr 1fr;
-	grid-template-areas: "alert datas"
-						"localisation datas";
-}
-
-.alert
-{
-	grid-area: alert;
-	background-color: #607D8B;
-}
-.localisation
-{
-	grid-area: localisation;
-	background-color: #607d8b70;
-}
-.datas
-{
-	grid-area: datas;
-	background-color: #607d8b99;
+.list-reports{
+	box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+	0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+	0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 }
