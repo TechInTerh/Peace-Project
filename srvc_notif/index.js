@@ -12,17 +12,13 @@ var con = mysql.createConnection({
 
 console.log("Connecting...");
 con.connect(function(err) {
-  if (err) return;
+  if (err) throw err;
   console.log("Connected!");
-  con.query("CREATE DATABASE alerts", function (err, result) {
-    if (err) return;
-    console.log("Database created");
-  });
 });
 
 
 var sql = "CREATE TABLE alerts (name VARCHAR(255), la DECIMAL(12,10)"+
-            ",lo DECIMAL(12,10))";
+            ",log DECIMAL(12,10))";
 console.log(sql);
 con.query(sql, function (err, result) {
     if (err) throw err;
