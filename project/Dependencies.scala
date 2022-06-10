@@ -28,18 +28,13 @@ object Dependencies {
 		val kafkaStreamsScala = "org.apache.kafka" %% "kafka-streams-scala" % V.kafka
 		val kafkaAvro = "io.confluent" % "kafka-avro-serializer" % V.kafkaAvro
 		val kafkaStreamsAvro = "io.confluent" % "kafka-streams-avro-serde" % V.kafkaAvro
-
 		val avro4sCore = "com.sksamuel.avro4s" % "avro4s-core_2.13" % V.avro4s
 		val avro4sKafka = "com.sksamuel.avro4s" % "avro4s-kafka_2.13" % V.avro4s
-
 		val sttp3Core = "com.softwaremill.sttp.client3" %% "core" % V.sttp3
 		val sttp3Circe = "com.softwaremill.sttp.client3" %% "circe" % V.sttp3
 		val circeGeneric = "io.circe" %% "circe-generic" % V.circe
-
 		val catsEffect = "org.typelevel" %% "cats-effect" % V.cats
-
 		val smlTagging = "com.softwaremill.common" %% "tagging" % V.smlCommon
-
 		val http4sEmberServer = "org.http4s" %% "http4s-ember-server" % V.http4sVersion
 		val http4sEmberClient = "org.http4s" %% "http4s-ember-client" % V.http4sVersion
 		val https4sCirce = "org.http4s" %% "http4s-circe" % V.http4sVersion
@@ -49,14 +44,11 @@ object Dependencies {
 		val sparkCore = "org.apache.spark" %% "spark-core" % V.spark
 		val sparkSql = "org.apache.spark" %% "spark-sql" % V.spark
 		val sparkAvro = "org.apache.spark" %% "spark-avro" % V.spark
-
 		val hadoopClient = "org.apache.hadoop" % "hadoop-client" % V.hadoop
 		val hadoopCommon = "org.apache.hadoop" % "hadoop-aws" % V.hadoop
-
 		val amazonAws = "com.amazonaws" % "aws-java-sdk-core" % V.amazonAws
 		val amazonAwsS3 = "com.amazonaws" % "aws-java-sdk-s3" % V.amazonAws
 		val amazonAxsKms = "com.amazonaws" % "aws-java-sdk-kms" % V.amazonAws
-
 	}
 }
 
