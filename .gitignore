@@ -1,9 +1,11 @@
 *.class
 *.log
 target/
+.bloop/
+.metals/
+metals.sbt
+.vscode/
 .bsp
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
 # compiled output
 dist
 tmp
@@ -51,3 +53,4 @@ Thumbs.db
 
 confluent-plugins/
 plugins/
+data/

@@ -5,7 +5,9 @@ version := "0.1"
 
 lazy val commonSettings = Seq(
   scalaVersion := "2.13.0",
-  resolvers += "Confluent Maven Repository" at "https://packages.confluent.io/maven/"
+  resolvers += "Confluent Maven Repository" at "https://packages.confluent.io/maven/",
+  scalacOptions += "-deprecation",
+  scalacOptions += "-feature"
 )
 
 lazy val root = (project in file(".")).aggregate(srvc_drone, srvc_analysis, srvc_alert)
@@ -23,7 +25,6 @@ lazy val srvc_analysis = (project in file("srvc_analysis"))
     name := "srvc_analysis",
     libraryDependencies ++= Seq(Libs.kafkaClient, Libs.kafkaAvro, Libs.catsEffect)
   )
-  .dependsOn(srvc_drone)
 
 lazy val srvc_alert = (project in file("srvc_alert"))
   .settings(commonSettings)
@@ -31,4 +32,12 @@ lazy val srvc_alert = (project in file("srvc_alert"))
     name := "srvc_alert",
     libraryDependencies ++= Seq(Libs.kafkaStreamsScala, Libs.kafkaStreamsAvro, Libs.avro4sKafka)
   )
-  .dependsOn(srvc_drone)
+
+lazy val srvc_back = (project in file("srvc_back"))
+  .settings(commonSettings)
+  .settings(
+    name := "srvc_back",
+    libraryDependencies ++= Seq(Libs.http4sEmberServer, Libs.http4sEmberClient, Libs.https4sCirce,
+                                Libs.http4Sdsl, Libs.logback,
+                                Libs.circeGeneric)
+  )
