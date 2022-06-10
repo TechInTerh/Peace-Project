@@ -16,6 +16,17 @@ This Project shows the architecture of the solution imagined by the students, as
 - Alexandre Rulleau
 - Timothée Ribes
 
+## Project description
+
+This directory contains multiple subprojects, each being linked to some specific services.
+
+- `srvc_alert`: Consume data from kafka topics to send alerts to peacewatchers.
+- `srvc_analysis`: Consume data from kafka topics to analyze them with Spark.
+- `srvc_connect`: Directory containing dockerfile and associated elements to run the schema-registry and init minio.
+- `srvc_drone`: produces drone random data to the specified kafka topic.
+- `srvc_notif`: stock alerts to send them to the front at the appropriate time.
+- `srvc_website`: Diplay alerts on a custom website.
+
 ## Installation
 
 To run this project, you'll need to install the following:
@@ -27,10 +38,18 @@ To run this project, you'll need to install the following:
 
 ## Dev Environment
 
-To start the running environment:
+### With docker-compose
+
+To start the full environment:
 
 ```sh
-docker-compose up -d
+docker-compose up --build -d
+```
+
+To start specific services:
+
+```sh
+docker-compose up --build <service_name>
 ```
 
 To stop the running environment:
@@ -39,11 +58,21 @@ To stop the running environment:
 docker-compose down
 ```
 
-## Running apps
+### Without docker-compose
 
-TODO: UPDATE THIS PART
+We recommand using `docker-compose` to run the project (as described above).
+However you may want to run it without if you want to hurt yourself or for any other reason.
 
-Our apps reach kafka using docker hostnames, so you need to add those two entry in `/etc/hosts`.
+Unfortunately, you'll still need to start some services manually, so to avoid any config problem we recommand using the following command:
+
+```sh
+docker compose up -d init-kafka-connector sql-alerts
+```
+
+Thanks to the dependancy tree of docker-compose, it will start all external components required to run our services.
+
+Our services and components interact with hostnames defined in the `docker-compose.yml` file.
+Consequently, you need to add the following lines to your `/etc/hosts` file in order ro run the services WITHOUT docker-compose:
 
 ```txt
 127.0.0.1 kafka
@@ -53,11 +82,11 @@ Our apps reach kafka using docker hostnames, so you need to add those two entry 
 127.0.0.1 sql-alerts
 ```
 
-This directory contains 3 sbt projects each being independent app:
+This directory contains 3 sbt projects each being independent subprojects:
 
-- `srvc_drone`: produces drone random data to the specified kafka topic.
-- `srvc_analysis`: Consume data from kafka topics to analyze them with Spark.
-- `srvc_alert`: Consume data from kafka topics to send alerts to peacewatchers.
+- `srvc_drone`
+- `srvc_analysis`
+- `srvc_alert`
 
 With `sbt` each app can be started in separate shell instance.
 To do that, use the following command:
@@ -72,9 +101,10 @@ Example:
 sbt "project srvc_drone" run
 ```
 
-Please run `srvc_drone` first.
 To remove all generated files, use the following command:
 
 ```sh
 find . -name target -type d -exec rm -rf {} \;
 ```
+
+For the others services (`srvc_notif` and `srvc_website`), you can find instructions to run them in their respective directory.
