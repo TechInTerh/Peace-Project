@@ -13,18 +13,18 @@ lazy val commonSettings = Seq(
 lazy val root = (project in file(".")).aggregate(srvc_drone, srvc_analysis, srvc_alert)
 
 lazy val srvc_drone = (project in file("srvc_drone"))
-	.settings(commonSettings)
-	.settings(
-		name := "srvc_drone",
-		libraryDependencies ++= Seq(Libs.kafkaClient, Libs.kafkaAvro, Libs.catsEffect, Libs.avro4sCore, Libs.sttp3Core, Libs.sttp3Circe, Libs.circeGeneric, Libs.smlTagging)
-	)
+  .settings(commonSettings)
+  .settings(
+    name := "srvc_drone",
+    libraryDependencies ++= Seq(Libs.kafkaClient, Libs.kafkaAvro, Libs.catsEffect, Libs.avro4sCore, Libs.sttp3Core, Libs.sttp3Circe, Libs.circeGeneric, Libs.smlTagging)
+  )
 
 lazy val srvc_analysis = (project in file("srvc_analysis"))
-	.settings(commonSettings)
-	.settings(
-		name := "srvc_analysis",
-		libraryDependencies ++= Seq(Libs.sparkCore, Libs.sparkSql, Libs.hadoopClient, Libs.hadoopCommon, Libs.amazonAws, Libs.amazonAwsS3, Libs.amazonAxsKms)
-	)
+  .settings(commonSettings)
+  .settings(
+    name := "srvc_analysis",
+    libraryDependencies ++= Seq(Libs.sparkCore, Libs.sparkSql, Libs.sparkAvro, Libs.hadoopClient, Libs.hadoopCommon, Libs.amazonAws, Libs.amazonAwsS3, Libs.amazonAxsKms)
+  )
 
 lazy val srvc_alert = (project in file("srvc_alert"))
   .settings(commonSettings)
