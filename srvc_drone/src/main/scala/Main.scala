@@ -69,7 +69,7 @@ object Main extends App {
     }
 
     (1 to NB_DRONES).foreach { droneId =>
-        (1 to Random.nextInt(MAX_REPORTS_PER_DRONE)).foreach { reportId =>
+        (1 to (1 + Random.nextInt(MAX_REPORTS_PER_DRONE))).foreach { reportId =>
             // Select random number of words and citizens
             val selectedWords = selectRandomElements(dictionary, List(), 1 + Random.nextInt(MAX_WORDS_PER_REPORT) - 1)
             val selectedCitizens = selectRandomElements(citizenNames, List(), 1 + Random.nextInt(MAX_CITIZENS_PER_REPORT - 1)).map {
