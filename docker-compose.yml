@@ -141,7 +141,7 @@ services:
     build: .
     command: /ops/sbt/bin/sbt "project srvc_alert" run
     depends_on:
-      srvc_back:
+      srvc_notif:
         condition: service_started
 
   srvc_notif:
@@ -155,7 +155,7 @@ services:
             condition: service_started
 
   sql-alerts:
-      image: 
+      image:
         mysql:5
       hostname: sql-alerts
       ports:
@@ -164,3 +164,12 @@ services:
       environment:
           MYSQL_ROOT_PASSWORD: sqladmin
           MYSQL_DATABASE: alerts
+
+  srvc_website:
+    image: srvc_website
+    build: srvc_website
+    ports:
+      - 4200:80
+    depends_on:
+      srvc_alert:
+        condition: service_started
