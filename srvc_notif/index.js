@@ -19,19 +19,18 @@ con.connect(function(err) {
 });
 
 
-var sql = "CREATE TABLE IF NOT EXISTS alerts (name VARCHAR(255), la DECIMAL(12,10)"+
-            ",log DECIMAL(12,10))";
+var sql = "CREATE TABLE IF NOT EXISTS alerts (name VARCHAR(255), la DECIMAL(12,10), log DECIMAL(12,10))";
 con.query(sql, function(err, result) {
     if (err) throw err;
     console.log("Table alerts created");
 });
 
-app.post('/alert', function(req,res){
+app.post('/alert', function(req, res){
+    console.log(req.body)
     const name = req.body.name;
     const lat = req.body.lat;
-    const long = req.body.log;
-    var sql = "INSERT INTO alerts (name, la, log) VALUES ('" + name
-        + "', "+lat+", "+lon+")";
+    const lon = req.body.log;
+    var sql = "INSERT INTO alerts (name, la, log) VALUES ('" + name + "', " + lat + ", " + lon + ")";
     con.query(sql, function(err, result) {
         if (err) throw err;
         console.log("1 record inserted");

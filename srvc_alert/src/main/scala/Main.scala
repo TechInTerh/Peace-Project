@@ -31,7 +31,7 @@ object Main extends App {
     def postAlert(name: String, lat: String, lon: String): Unit = {
         val value: String = "{\"name\": \"" + name +
                             "\", \"lat\": " + lat +
-                            ", \"lon\": " + lon +"}"
+                            ", \"lon\": " + lon + "}"
 
         val backend = HttpURLConnectionBackend()
         basicRequest.post(uri"http://srvc_notif:8080/alert")
