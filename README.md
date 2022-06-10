@@ -1,16 +1,16 @@
-# Peace Project
+# Project
 
-## PeaceLand
+## Land
 
-In the perfect world of Peaceland, harmony, peace and serenity are at the core of the society. Everybody praises its faithful leader for this : the Peaceleader.
+In the perfect world of Land, harmony, peace and serenity are at the core of the society. Everybody praises its faithful leader for this : the Leader.
 
-Everyone experiences happiness, but some lost citizens are finding difficulties to integrate themselves to the great society, and need some reeducation in the peacecamps.
+Everyone experiences happiness, but some lost citizens are finding difficulties to integrate themselves to the great society, and need some reeducation.
 
-Peacemakers are formed to make quick interventions in order to help anyone that feel agitated in order to teach them peace, and in the most severe cases, bring them to a peacecamp to reeducate them according to the values of peacefulness.
+Polimeans are formed to make quick interventions in order to help anyone that feel agitated in order to teach them peace, and in the most severe cases, arrest them.
 
-For this they need drones named peacewatchers in order to detect as soon as possible the lowest peacescores, and to make the nearest peacewatchers squad intervene to avoid this agitated citizen to propagate this negativity towards their neighbours.
+For this they need drones named Watchers in order to detect as soon as possible the lowest peace scores, and to make the nearest Watchers squad intervene to avoid this agitated citizen to propagate this negativity towards their neighbours.
 
-This is why they called for help 4 student of EPITA : Establishment of Peace and Individuality Totally Autonomous. These students must build an architecture answering these needs. To help them detect the low peacescores, Peaceland gives them access to peacewatchers sending them reports from all the country.
+This is why they called for help 4 student of EPITA : Establishment of Peace and Individuality Totally Autonomous. These students must build an architecture answering these needs. To help them detect the low peace scores, Land gives them access to Watchers sending them reports from all the country.
 
 This Project shows the architecture of the solution imagined by the students, as well as the full code written in Scala and Spark, and running with Docker. It is made by :
 
@@ -23,7 +23,7 @@ This Project shows the architecture of the solution imagined by the students, as
 
 This directory contains multiple subprojects, each being linked to some specific services.
 
-- `srvc_alert`: Consumes data from kafka topics to send alerts to peacewatchers.
+- `srvc_alert`: Consumes data from kafka topics to send alerts to Watchers.
 - `srvc_analysis`: Consumes data from our minio bucket to analyze them with Spark.
 - `srvc_connect`: Directory containing dockerfile and associated elements to run the schema-registry and init minio.
 - `srvc_drone`: Produces random drone data to the specified kafka topic.
@@ -36,6 +36,9 @@ To run this project, you'll need to install the following:
 
 - [Docker](https://docs.docker.com/engine/install/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
+
+To dev you also need to install the following:
+
 - [Scala](https://www.scala-lang.org/download/)
 - [SBT](https://www.scala-sbt.org/download.html)
 
