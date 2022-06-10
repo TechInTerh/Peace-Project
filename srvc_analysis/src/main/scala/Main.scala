@@ -3,6 +3,7 @@ import org.apache.avro.reflect.AvroSchema
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions._
 import org.apache.hadoop.fs.{FileSystem, Path}
 
 //import registry.SchemaRegistry._
@@ -30,6 +31,27 @@ object Main extends App {
 
 	val avrotest = spark.read.format("avro").load("s3a://kafka-bucket/topics/drone-report/partition=0/*.avro")
 	avrotest.show()
+
+	//Nombre de messages de drones
+	println(avrotest.count())
+
+	//Groupement par Timestamp
+	val avrotesttimestampgroup = avrotest.groupBy("timestamp").count().sort(desc("count"))
+	avrotesttimestampgroup.show()
+
+	println(avrotesttimestampgroup.count())
+
+	//Groupement par drone
+	val avrotestdronegroup = avrotest.groupBy("droneId").count().sort(desc("count"))
+	avrotestdronegroup.show()
+
+	println(avrotestdronegroup.count())
+
+	//Et maintenant je vais me faire chier à récupérer le Peacescore
+	avrotest.withColumn("partofpeacescore", col("citizens").getItem(0)).printSchema()
+
+	//avrotest
+
 	//avrotest.show()
 	//spark.read.format("avro").load("s3a://spark-test/drone-report00000000000.avro").show()
 }
