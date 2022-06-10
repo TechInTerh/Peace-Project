@@ -24,14 +24,12 @@ lazy val srvc_analysis = (project in file("srvc_analysis"))
   .settings(commonSettings)
   .settings(
     name := "srvc_analysis",
-    libraryDependencies ++= Seq(Libs.kafkaClient, Libs.kafkaAvro,
-    Libs.catsEffect)
+    libraryDependencies ++= Seq(Libs.kafkaClient, Libs.kafkaAvro, Libs.catsEffect)
   )
 
 lazy val srvc_alert = (project in file("srvc_alert"))
   .settings(commonSettings)
   .settings(
     name := "srvc_alert",
-    libraryDependencies ++= Seq(Libs.kafkaStreamsScala, Libs.kafkaStreamsAvro,
-    Libs.avro4sKafka, Libs.sttp3Core, Libs.sttp3Circe)
+    libraryDependencies ++= Seq(Libs.kafkaStreamsScala, Libs.kafkaStreamsAvro, Libs.avro4sKafka, Libs.sttp3Core, Libs.sttp3Circe)
   )
