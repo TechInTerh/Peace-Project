@@ -14,7 +14,7 @@ export class ListReportComponent implements OnInit {
 	reports: Report[] = [];
 
 	constructor(private backendService: BackendService) {
-		let source = interval(2000); // every 2 seconds
+		let source = interval(5000); // every 5 seconds
 		this.subscription = source.subscribe(val => {
 			this.refresh_list()
 		});
@@ -25,22 +25,16 @@ export class ListReportComponent implements OnInit {
 	}
 
 	refresh_list() {
-
-		if (this.reports.length < 2) {
-			this.reports.push(new Report(["March", "Jean", "Jeremy", "Paul"], 90.85, 1.29));
-		}
-		const post = this.backendService.sendReportRequest();
-		//clea reports
+		console.log("Refreshing list");
 		this.reports = [];
+		const post = this.backendService.sendReportRequest();
 		post.subscribe(
 			(data: any) => {
 				data.forEach( (element: Object) => {
-					this.reports.push(Report.fromJson(element));
-					console.log(element);
+					this.reports.unshift(Report.fromJson(element))
 				})
 			}
 		);
-		console.log("Refreshing list");
 	}
 
 	ngOnInit(): void {
