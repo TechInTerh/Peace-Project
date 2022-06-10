@@ -1,7 +1,7 @@
 var express = require('express');
 var mysql = require('mysql');
 
-var app = express();
+var app = express(express.json());
 
 var con = mysql.createConnection({
   host: "localhost",
@@ -17,32 +17,32 @@ con.connect(function(err) {
 });
 
 
-var sql = "CREATE TABLE alerts (name VARCHAR(255), la DECIMAL(12,10)"+
+var sql = "CREATE TABLE IF NOT EXISTS alerts (name VARCHAR(255), la DECIMAL(12,10)"+
             ",log DECIMAL(12,10))";
-console.log(sql);
-con.query(sql, function (err, result) {
+con.query(sql, function(err, result) {
     if (err) throw err;
     console.log("Table alerts created");
 });
 
-var sql = "INSERT INTO alerts (name, la, log) VALUES ('test', 1, 2)";
-con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log("1 record inserted");
-});
-var sql = "INSERT INTO alerts (name, la, log) VALUES ('test2', 1, 2)";
-con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log("1 record inserted");
-});
-var sql = "INSERT INTO alerts (name, la, log) VALUES ('test3', 1, 2)";
-con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log("1 record inserted");
+app.post('/alert', function(req,res){
+    const name = req.body.name;
+    const lat = req.body.lat;
+    const long = req.body.log;
+    var sql = "INSERT INTO alerts (name, la, log) VALUES ('" + name
+        + "', "+lat+", "+lon+")";
+    con.query(sql, function(err, result) {
+        if (err) throw err;
+        console.log("1 record inserted");
+    });
+
+    res.send(req.body);
 });
 
-app.get('/', function(req,res){
-    res.send("Hello world!");
+app.get('/alerts', function(req, res){
+    con.query("SELECT * FROM alerts", function(err, result, fields) {
+        if (err) throw err;
+        res.send(result)
+    });
 });
 
 app.listen(8080);
