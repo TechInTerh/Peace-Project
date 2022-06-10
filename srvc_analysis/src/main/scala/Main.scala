@@ -7,12 +7,6 @@ import org.apache.spark.sql.functions._
 import org.apache.hadoop.fs.{FileSystem, Path}
 
 object Main extends App {
-	def add_File(sc: SparkContext, file_path: String, file_name: String): Unit = {
-		println("Adding file: " + file_path)
-		val data = sc.textFile(file_path)
-		data.saveAsTextFile("s3a://spark-test/" + file_name)
-	}
-
 	val spark = SparkSession.builder().appName("Peace-Analyzer")
 		.master("local[4]")
 		.config("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
