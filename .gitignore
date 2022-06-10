@@ -10,3 +10,7 @@ metals.sbt
 .vscode/
 .bsp
 data/
+messagesperdrone
+messagesperhour
+scoreperdrone
+rendu.txt
