@@ -49,10 +49,11 @@ Our apps reach kafka using docker hostnames, so you need to add those two entry 
 127.0.0.1 kafka
 127.0.0.1 schema-registry
 127.0.0.1 minio
-127.0.0.1 srvc_back
+127.0.0.1 srvc_notif
+127.0.0.1 sql-alerts
 ```
 
-This directory contains 4 sbt projects each being independent app:
+This directory contains 3 sbt projects each being independent app:
 
 - `srvc_drone`: produces drone random data to the specified kafka topic.
 - `srvc_analysis`: Consume data from kafka topics to analyze them with Spark.

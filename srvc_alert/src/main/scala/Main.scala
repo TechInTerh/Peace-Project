@@ -22,7 +22,7 @@ import sttp.client3.{HttpURLConnectionBackend, _}
 object Main extends App {
     def send(value: String): Unit = {
         val backend = HttpURLConnectionBackend()
-        basicRequest.post(uri"http://srvc_back:8080/alert")
+        basicRequest.post(uri"http://srvc_notif:8080/alert")
                     .body(value)
                     .send(backend)
                     .code
@@ -60,8 +60,7 @@ object Main extends App {
 
     def citizensToSeq(citizens: Object) = {
       val array = citizens.asInstanceOf[GenericData.Array[GenericData.Record]]
-      CollectionConverters
-          .asScala(array.iterator()).toSeq
+      CollectionConverters.asScala(array.iterator()).toSeq
     }
     val SCORE_TRESHOLD = 50
     source.peek((k,v)=>println(v.toString()))
