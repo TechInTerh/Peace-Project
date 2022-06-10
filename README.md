@@ -110,4 +110,7 @@ To remove all generated files, use the following command:
 find . -name target -type d -exec rm -rf {} \;
 ```
 
+Warning : About srvc_analysis : the analysis files are located in docker container if the project is ran by docker.
+To avoid this, you can run srvc_analysis locally.
+
 For the others services (`srvc_notif` and `srvc_website`), you can find instructions to run them in their respective directory.

@@ -24,7 +24,7 @@ lazy val srvc_analysis = (project in file("srvc_analysis"))
   .settings(commonSettings)
   .settings(
     name := "srvc_analysis",
-    libraryDependencies ++= Seq(Libs.kafkaClient, Libs.kafkaAvro, Libs.catsEffect)
+    libraryDependencies ++= Seq(Libs.sparkCore, Libs.sparkSql, Libs.sparkAvro, Libs.hadoopClient, Libs.hadoopCommon, Libs.amazonAws, Libs.amazonAwsS3, Libs.amazonAxsKms)
   )
 
 lazy val srvc_alert = (project in file("srvc_alert"))

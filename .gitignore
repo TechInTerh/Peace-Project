@@ -1,5 +1,8 @@
 *.class
 *.log
+.idea/
+.bsp/
+project
 target/
 .bloop/
 .metals/
@@ -8,6 +11,12 @@ metals.sbt
 .bsp
 
 data/
+
+messagesperdrone
+messagesperhour
+scoreperdrone
+rendu.txt
+
 node_modules
 *.swp
 package-lock.json
@@ -59,4 +68,3 @@ Thumbs.db
 
 confluent-plugins/
 plugins/
-
