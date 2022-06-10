@@ -46,6 +46,4 @@ app.get('/alerts', function(req, res){
         res.send(result)
     });
 });
-
-
 app.listen(8080);
