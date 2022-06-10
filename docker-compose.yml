@@ -143,6 +143,8 @@ services:
     depends_on:
       srvc_notif:
         condition: service_started
+      schema-registry:
+        condition: service_healthy
 
   srvc_notif:
     image: srvc_notif

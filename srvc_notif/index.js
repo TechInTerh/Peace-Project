@@ -1,9 +1,13 @@
 var express = require('express');
 var mysql = require('mysql');
+var bodyParser = require("body-parser")
 
 var app = express(express.json());
 const cors = require('cors');
 app.use(cors());
+app.use(bodyParser.json())
+
+var urlParser = bodyParser.urlencoded({extended : false})
 
 var con = mysql.createConnection({
   host: "sql-alerts",
@@ -26,12 +30,12 @@ con.query(sql, function(err, result) {
     console.log("Table alerts created");
 });
 
-app.post('/alert', function(req,res){
+app.post('/alert', bodyParser.json(),function(req,res){
     const name = req.body.name;
     const lat = req.body.lat;
-    const long = req.body.log;
+    const long = req.body.lon;
     var sql = "INSERT INTO alerts (name, la, log) VALUES ('" + name
-        + "', "+lat+", "+lon+")";
+        + "', "+lat+", "+long+");";
     con.query(sql, function(err, result) {
         if (err) throw err;
         console.log("1 record inserted");
@@ -46,4 +50,6 @@ app.get('/alerts', function(req, res){
         res.send(result)
     });
 });
+
+
 app.listen(8080);
