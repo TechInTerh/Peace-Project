@@ -60,8 +60,7 @@ object Main extends App {
 
     def citizensToSeq(citizens: Object) = {
       val array = citizens.asInstanceOf[GenericData.Array[GenericData.Record]]
-      CollectionConverters
-          .asScala(array.iterator()).toSeq
+      CollectionConverters.asScala(array.iterator()).toSeq
     }
     val SCORE_TRESHOLD = 50
     source.peek((k,v)=>println(v.toString()))
