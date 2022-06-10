@@ -172,11 +172,11 @@ services:
           MYSQL_ROOT_PASSWORD: sqladmin
           MYSQL_DATABASE: alerts
 
-  # srvc_website:
-  #   image: srvc_website
-  #   build: srvc_website
-  #   ports:
-  #     - 4200:80
-  #   depends_on:
-  #     srvc_alert:
-  #       condition: service_started
+  srvc_website:
+    image: srvc_website
+    build: srvc_website
+    ports:
+      - 4200:80
+    depends_on:
+      srvc_alert:
+        condition: service_started
