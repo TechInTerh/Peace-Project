@@ -1,3 +1,5 @@
+import Main.avrotestpeace
+
 import java.util.Properties
 import org.apache.avro.reflect.AvroSchema
 import org.apache.hadoop.conf.Configuration
@@ -6,7 +8,12 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 import org.apache.hadoop.fs.{FileSystem, Path}
 
+import java.io.{BufferedWriter, File, FileWriter}
+
 object Main extends App {
+
+	def mean(xs: Iterable[Int]) = xs.sum / xs.size
+
 	val spark = SparkSession.builder().appName("Peace-Analyzer")
 		.master("local[4]")
 		.config("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
@@ -19,43 +26,67 @@ object Main extends App {
 		.getOrCreate()
 
 	val avrotest = spark.read.format("avro").load("s3a://kafka-bucket/topics/drone-report/partition=0/*.avro")
-	avrotest.show()
 
-	//Nombre de messages de drones
-	println(avrotest.count())
+	val file = new File("rendu.txt")
+	val bw = new BufferedWriter(new FileWriter(file))
+	bw.write("Registry of saved Peacewatcher reports : ")
+	bw.newLine()
 
-	//Groupement par Timestamp
-	val avrotesttimestampgroup = avrotest.groupBy("timestamp").count().sort(desc("count"))
-	avrotesttimestampgroup.show()
+	//Question 1 : combien de messages de drones avons nous ?
 
-	println(avrotesttimestampgroup.count())
+	bw.write("Number of reports registered = ")
 
-	//Groupement par drone
+	bw.write(avrotest.distinct().count().toString)
+
+	bw.newLine()
+
+	//Question 2 : à quelles heures avons nous le plus de rapports ?
+
+	var avrotesttimestamphour = avrotest.withColumn("hour", (col("timestamp") % 86400) / 3600)
+
+	avrotesttimestamphour = avrotesttimestamphour.withColumn("hour", col("hour").cast("int"))
+
+	val avrotesttimestampgroup = avrotesttimestamphour.groupBy("hour").count().sort(desc("count"))
+
+	avrotesttimestampgroup.repartition(1).write.option("header",true).csv("messagesperhour")
+
+	bw.newLine()
+
+	bw.write("To see number of messages sent by hour, see file messageperhour")
+	bw.newLine()
+
+	//Question 3 : Quels drones ont envoyé le plus de rapports ?
 	val avrotestdronegroup = avrotest.groupBy("droneId").count().sort(desc("count"))
 	avrotestdronegroup.show()
-
 	println(avrotestdronegroup.count())
 
 	//Mes tests pour obtenir le peacescore
-	avrotest.withColumn("citizensstring", array_join(avrotest.col("words"),"|")).show()
-
-	val avrotestexploded = avrotest.withColumn("citizen", explode(col("citizens")))
-
-	avrotestexploded.withColumn("peacescore",col("citizen.peaceScore")).show()
-
-	//avrotest.withColumn("partofpeacescore", col("citizens").getItem(0)).printSchema()
+	//val avrotestexploded = avrotest.withColumn("citizen", explode(col("citizens")))
+	//avrotestexploded.withColumn("peacescore",col("citizen.peaceScore")).show()
 
 	//val avrotestdronegroup2 = avrotest.groupBy("droneId").sum("citizens.peaceScore")
+	//avrotest.printSchema()
 
-	avrotest.printSchema()
+	//Question 4 : quelles sont les
+	var avrotestpeace = avrotest.withColumn("peaceScores", col("citizens.peaceScore"))
+	avrotestpeace = avrotestpeace.withColumn("peaceScoresum", aggregate(col("peaceScores"), lit(0), (x, y) => x + y))
+	avrotestpeace = avrotestpeace.withColumn("peaceScoremax", array_max(col("peaceScores")))
+	avrotestpeace = avrotestpeace.withColumn("peaceScoremin", array_min(col("peaceScores")))
+	avrotestpeace = avrotestpeace.withColumn("numbercitizens", size(col("citizens.peaceScore")))
+	avrotestpeace = avrotestpeace.withColumn("peaceScoremean", col("peaceScoresum") / col("numbercitizens"))
 
-	val avrotestpeace = avrotest.withColumn("peacescores", col("citizens.peaceScore"))
+	avrotestpeace.groupBy(col("droneId")).avg("peaceScoremean")
+	//avrotestpeace = avrotestpeace.withColumn("peaceScoremedian", col("peaceScoresum") / col("numbercitizens"))
+	//avrotestpeace = avrotestpeace.withColumn("Day", to_date(col("timestamp")))
 
 	avrotestpeace.show()
 
-	avrotestpeace.withColumn("sumscore", aggregate(col("peacescores"), lit(0), (x, y) => (x + y))).show()
 
 	//avrotestdronegroup2.show()
+	//avrotest.withColumn("citizensstring", array_join(avrotest.col("words"),"|")).show()
 
+	//new FileWriter("renvoi.txt")
+
+	bw.close()
 	println("FIN !")
 }
