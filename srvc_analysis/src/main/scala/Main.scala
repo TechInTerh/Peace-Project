@@ -42,6 +42,26 @@ object Main extends App {
 
 	println(avrotestdronegroup.count())
 
-	//Et maintenant je vais me faire chier à récupérer le Peacescore
-	avrotest.withColumn("partofpeacescore", col("citizens").getItem(0)).printSchema()
+	//Mes tests pour obtenir le peacescore
+	avrotest.withColumn("citizensstring", array_join(avrotest.col("words"),"|")).show()
+
+	val avrotestexploded = avrotest.withColumn("citizen", explode(col("citizens")))
+
+	avrotestexploded.withColumn("peacescore",col("citizen.peaceScore")).show()
+
+	//avrotest.withColumn("partofpeacescore", col("citizens").getItem(0)).printSchema()
+
+	//val avrotestdronegroup2 = avrotest.groupBy("droneId").sum("citizens.peaceScore")
+
+	avrotest.printSchema()
+
+	val avrotestpeace = avrotest.withColumn("peacescores", col("citizens.peaceScore"))
+
+	avrotestpeace.show()
+
+	avrotestpeace.withColumn("sumscore", aggregate(col("peacescores"), lit(0), (x, y) => (x + y))).show()
+
+	//avrotestdronegroup2.show()
+
+	println("FIN !")
 }
